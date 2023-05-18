@@ -6,17 +6,21 @@ import { StyleSheet, Text, View } from 'react-native';
 import SplashScreen from './compoment/SplashScreen';
 import Login from './compoment/Login';
 import Register from "./compoment/Register";
+import Home from "./compoment/Home";
+import Cart from "./compoment/Cart";
 
 export default function App() {
-  const Tab = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator();
   return (
-    <NavigationContainer>
-      <Tab.Navigator initialRouteName='SplashScreen'>
-        <Tab.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
-        <Tab.Screen name='Login' component={Login} options={{ headerShown: false }} />
-        <Tab.Screen name='Register' component={Register} options={{ headerShown: false }} />
-      </Tab.Navigator>
-    </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='SplashScreen'>
+          <Stack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='Login' component={Login}  options={{ headerShown: false, }} />
+          <Stack.Screen name='Register' component={Register} options={{ title: 'Đăng Ký' }} />
+            <Stack.Screen name='Home' component={Home} options={{ title: 'Trang Chủ'}} />
+          <Stack.Screen name='Cart' component={Cart} options={{ title: 'Giỏ hàng'}} />
+        </Stack.Navigator>
+      </NavigationContainer>
   );
 }
 
