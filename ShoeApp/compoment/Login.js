@@ -2,7 +2,10 @@ import { StyleSheet, Text, View, Image, ImageBackground, TextInput, Button, Touc
 import React from 'react'
 import { useState } from 'react'
 
-const Login = (prop) => {
+const Login = ({ navigation }) => {
+    const handleLogin = () => {
+        // Xử lý logic đăng nhập tại đây
+    };
     return (
         <View>
             <Text style={{ fontSize: 35, textAlign: 'center', marginTop: 100, fontWeight: 'bold' }}>Welcome</Text>
@@ -22,7 +25,7 @@ const Login = (prop) => {
 
 
             <View style={{ width: 310, height: 80, marginTop: 16, alignSelf: 'center' }}>
-                <Button color={'#1877F2'} title='Sign In' />
+                <Button color={'#1877F2'} title='Sign In' onPress={handleLogin} />
                 <Text style={{ textAlign: 'center', fontSize: 16, marginTop: 16 }}>Forgot the password?</Text>
             </View>
 
@@ -32,7 +35,7 @@ const Login = (prop) => {
                     Don't have an account?
                     <TouchableHighlight activeOpacity={0.6}
                         underlayColor={'#1877F2'}                   >
-                        <Text style={{ color: '#1877F2', fontSize: 18 }}> Sign up</Text>
+                        <Text style={{ color: '#1877F2', fontSize: 18 }} onPress={()=>navigation.navigate('Register')} > Sign up</Text>
                     </TouchableHighlight>
 
 

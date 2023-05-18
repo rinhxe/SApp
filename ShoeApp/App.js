@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import SplashScreen from './compoment/SplashScreen';
 import Login from './compoment/Login';
+import Register from "./compoment/Register";
 
 export default function App() {
   const Tab = createNativeStackNavigator();
@@ -13,6 +14,7 @@ export default function App() {
       <Tab.Navigator initialRouteName='SplashScreen'>
         <Tab.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
         <Tab.Screen name='Login' component={Login} options={{ headerShown: false }} />
+        <Tab.Screen name='Register' component={Register} options={{ headerShown: false }} />
       </Tab.Navigator>
     </NavigationContainer>
   );
