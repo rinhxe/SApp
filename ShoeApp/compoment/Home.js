@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 function Home({ navigation }) {
-    const products = [
-        { id: 1, name: 'Product 1', price: '$10', image: 'https://example.com/product1.png' },
-        { id: 2, name: 'Product 2', price: '$20', image: 'https://example.com/product2.png' },
-        { id: 3, name: 'Product 3', price: '$30', image: 'https://example.com/product3.png' },
-        { id: 4, name: 'Product 4', price: '$40', image: 'https://example.com/product4.png' },
-        { id: 5, name: 'Product 5', price: '$50', image: 'https://example.com/product5.png' },
-        { id: 6, name: 'Product 6', price: '$60', image: 'https://example.com/product6.png' },
-        { id: 2, name: 'Product 2', price: '$20', image: 'https://example.com/product2.png' },
-        { id: 3, name: 'Product 3', price: '$30', image: 'https://example.com/product3.png' },
-        { id: 4, name: 'Product 4', price: '$40', image: 'https://example.com/product4.png' },
-        { id: 5, name: 'Product 5', price: '$50', image: 'https://example.com/product5.png' },
-    ];
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        fetch('https://hungnttg.github.io/shopgiay.json')
+            .then((response) => response.json())
+            .then((data) => setProducts(data.products))
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
+    const handleProductPress = (product) => {
+        navigation.navigate('ProductDetail', { product });
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -28,11 +31,12 @@ function Home({ navigation }) {
             <View style={styles.separator}></View>
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 {products.map((product) => (
-                    <TouchableOpacity key={product.id} style={styles.productItem}>
+                    <TouchableOpacity key={product.styleid} style={styles.productItem} onPress={() => handleProductPress(product)}>
                         <View style={styles.productFrame}>
-                            <Image source={{ uri: product.image }} style={styles.productImage} />
-                            <Text style={styles.productName}>{product.name}</Text>
+                            <Image source={{ uri: product.search_image }} style={styles.productImage} />
+                            <Text style={styles.productName}>{product.brands_filter_facet}</Text>
                             <Text style={styles.productPrice}>{product.price}</Text>
+                            <Text style={styles.productAdditionalInfo}>{product.product_additional_info}</Text>
                         </View>
                     </TouchableOpacity>
                 ))}
@@ -42,6 +46,7 @@ function Home({ navigation }) {
 }
 
 export default Home;
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -54,7 +59,7 @@ const styles = StyleSheet.create({
         paddingTop: 16,
     },
     cartIconContainer: {
-        marginBottom:10,
+        marginBottom: 10,
         position: 'relative',
         marginRight: 16,
     },
@@ -87,6 +92,7 @@ const styles = StyleSheet.create({
     },
     productItem: {
         width: '48%',
+        height: 300,
         marginBottom: 16,
         alignItems: 'center',
     },
@@ -95,6 +101,8 @@ const styles = StyleSheet.create({
         borderColor: '#888',
         borderRadius: 8,
         padding: 16,
+        width: '100%',
+        height: '100%',
         alignItems: 'center',
     },
     productImage: {
@@ -111,5 +119,10 @@ const styles = StyleSheet.create({
     productPrice: {
         fontSize: 14,
         color: '#888',
+    },
+    productAdditionalInfo: {
+        fontSize: 12,
+        color: '#888',
+        marginTop: 4,
     },
 });
