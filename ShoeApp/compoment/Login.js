@@ -1,6 +1,8 @@
-import { StyleSheet, Text, View, Image,
+import {
+    StyleSheet, Text, View, Image,
     ImageBackground, TextInput, Button,
-    TouchableHighlight,TouchableOpacity,Linking   } from 'react-native'
+    TouchableHighlight, TouchableOpacity, Linking
+} from 'react-native'
 import React from 'react'
 import { useState } from 'react'
 import { Alert } from 'react-native';
@@ -9,76 +11,161 @@ import { Alert } from 'react-native';
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const handleLogin = () => {
-        // Xử lý logic đăng nhập
-        if (!email || !password) {
-            Alert.alert('Vui lòng nhập email và mật khẩu');
-            return;
-        }
-        const correctEmail = "admin@gmail.com";
-        const correctPassword = "admin";
-        if (email === correctEmail && password === correctPassword) {
-            navigation.navigate('Home');
+
+    const [checkemail, setcheckemail] = useState(true)
+    const [validateEmail, setvalidateEmail] = useState(true)
+    const [checkuser, setcheckuser] = useState(true)
+
+    const [checkpass, setcheckpass] = useState(true)
+    const [ktpass, setktpass] = useState(true)
+
+    const validate = () => {
+        if (email.length == 0 || !/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email) || password.length == 0) {
+
+
+            if (email.length == 0) {
+                setcheckemail(false)
+                setvalidateEmail(true)
+            } else if (!/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email)) {
+                setvalidateEmail(false)
+                setcheckemail(true)
+            }
+            else {
+                setvalidateEmail(true)
+                setcheckemail(true)
+            }
+
+
+            if (password.length == 0) {
+                setcheckpass(false)
+                setktpass(true)
+
+            } else {
+                setcheckpass(true)
+                setktpass(true)
+            }
+            return false
         } else {
-            Alert.alert('Sai thông tin đăng nhập');
-            setEmail('');
-            setPassword('');
+            setcheckpass(true)
+            setcheckemail(true)
+
+            setvalidateEmail(true)
+            setktpass(true)
+
+            return true
         }
+    }
+
+    const handleLogin = () => {
+        if (validate() == false) return
+        if (validate() == true) {
+            // Xử lý logic đăng nhập
+
+            const correctEmail = "admin@gmail.com";
+            const correctPassword = "admin";
+
+            if (email === correctEmail && password === correctPassword) {
+                navigation.navigate('Home');
+
+                setcheckemail(true)
+                setcheckpass(true)
+                setvalidateEmail(true)
+                setktpass(true)
+                setcheckuser(true)
+            } else {
+                if (email != correctEmail) {
+                    setcheckuser(false)
+                } else if (email === correctEmail) {
+                    setcheckuser(true)
+                    setktpass(false)
+                }
+
+            }
+        }
+
     }; // end hàm đăng nhập
     const handleForgotPassword = () => {
         Linking.openURL('tel:113');
     }; // end quên mật khẩu
+
     return (
-        <View>
-            <Text style={{ fontSize: 35, textAlign: 'center', marginTop: 100, fontWeight: 'bold' }}>Welcome</Text>
-            <Text style={{ fontSize: 25, textAlign: 'center' }}>My Friend</Text>
-            <View style={{ flexDirection: 'row', marginTop: 64, borderWidth: 1, backgroundColor: '#f5deb3', alignSelf: 'center', borderRadius: 16 }}>
-               
-                <TextInput style={{ width: 280, height: 50,textAlign: 'center' }}
-                    placeholder='E-mail address'
-                           value={email}
-                           onChangeText={setEmail}
-                />
+
+        <View style={styles.container}>
+
+            <Image source={require('../image/logoapp.png')} />
+
+            <Text style={styles.textWelcome}>
+                Chào mừng đến với
+                Shops Sneakers
+            </Text>
+
+            <Text style={styles.textLogin}>
+                Đăng nhập để tiếp tục
+            </Text>
+
+
+
+            <TextInput style={styles.input}
+                placeholder='E-mail address'
+                value={email}
+                onChangeText={setEmail}
+            />
+
+            <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginLeft: 23 }}>
+                <Text style={{ fontSize: 13, color: 'red' }}>{checkemail ? '' : 'Vui lòng nhập Email'}</Text>
+                <Text style={{ fontSize: 13, color: 'red' }}>{validateEmail ? '' : 'Email sai định dạng'}</Text>
+                <Text style={{ fontSize: 13, color: 'red' }}>{checkuser ? '' : 'Email không đúng'}</Text>
             </View>
-            <View style={{ flexDirection: 'row', marginTop: 16, borderWidth: 1, backgroundColor: '#f5deb3', alignSelf: 'center', borderRadius: 16 }}>
-            
-                <TextInput style={{ width: 280, height: 50 ,textAlign: 'center'}}
-                    placeholder='password'               
-                    secureTextEntry={true}
-                           value={password}
-                           onChangeText={setPassword}/>
+
+            <TextInput style={styles.input}
+                placeholder='password'
+                secureTextEntry={true}
+                value={password}
+                onChangeText={setPassword} />
+
+            <View style={{ alignSelf: 'flex-start', marginLeft: 23, flexDirection: 'row' }}>
+                <Text style={{ fontSize: 13, color: 'red' }}>{checkpass ? '' : 'Vui lòng nhập mật khẩu'}</Text>
+                <Text style={{ fontSize: 13, color: 'red' }}>{ktpass ? '' : 'Sai mật khẩu'}</Text>
             </View>
 
 
 
-            <View style={{ width: 310, height: 80, marginTop: 16, alignSelf: 'center' }}>
-                <TouchableOpacity
-                    style={styles.button}
-                    activeOpacity={0.6}
-                    onPress={handleLogin}
-                >
-                    <Text style={styles.buttonText}>Sign In</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.forgotPasswordButton}
-                    onPress={handleForgotPassword}
-                >
-                    <Text style={styles.forgotPasswordText}>Forgot the password?</Text>
-                </TouchableOpacity>
-                  </View>
+            <TouchableOpacity
+                style={styles.button}
+                activeOpacity={0.6}
+                onPress={handleLogin}
+            >
+                <Text style={styles.textButon}>Đăng nhập</Text>
+            </TouchableOpacity>
 
-            <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 80 }}>
-                <Text style={{ fontSize: 18 }}>
-
-                    Don't have an account?
-                    <TouchableHighlight activeOpacity={0.6}
-                        underlayColor={'#1877F2'}                   >
-                        <Text style={{ color: '#1877F2', fontSize: 18 }} onPress={()=>navigation.navigate('Register')} > Sign up</Text>
-                    </TouchableHighlight>
-
-
-                </Text>
+            <View style={styles.or} >
+                <View style={styles.line} />
+                <Text style={styles.textOR}>OR</Text>
+                <View style={styles.line} />
             </View>
+
+            <View style={styles.inputLogin}>
+
+                <Image source={require('../image/google.png')} />
+                <Text style={styles.textGG}>Đăng nhập bằng Google</Text>
+            </View>
+            <View style={styles.inputLogin}>
+
+                <Image source={require('../image/facebook.png')} />
+                <Text style={styles.textFB}>Đăng nhập bằng Facebook</Text>
+            </View>
+
+
+            <Text style={styles.forget} onPress={handleForgotPassword}>Quên mật khẩu?</Text>
+            <View style={styles.singin}>
+                <Text >Bạn là người mới?</Text>
+                <Text style={styles.inputSingin}
+                    onPress={() => { navigation.navigate('Register') }}
+                > Đăng ký</Text>
+            </View>
+
+
+
 
         </View>
     )
@@ -87,26 +174,108 @@ const Login = ({ navigation }) => {
 export default Login
 
 const styles = StyleSheet.create({
-    button: {
+    container: {
         flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    textButon: {
+        color: '#FFFFFF',
+        fontSize: 15,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    input: {
+        borderRadius: 5,
+        width: '90%',
+        height: 48,
+        margin: 10,
+        borderWidth: 2,
+        padding: 8,
+        borderColor: '#EBF0FF'
+    },
+    textLogin: {
+        textAlign: 'center',
+        marginTop: 7,
+        color: '#223263',
+        fontSize: 15,
+    },
+    textWelcome: {
+        fontSize: 18,
+        textAlign: 'center',
+        marginTop: 16,
+        fontWeight: 'bold',
+        width: 159,
+        color: '#223263'
+    },
+    inputLogin: {
+        margin: 7,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#1877F2',
-        borderRadius: 16,
+        flexDirection: 'row',
+        borderRadius: 5,
+        width: '90%',
+        height: 48,
+        borderColor: '#EBF0FF',
+        borderWidth: 2
     },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
+    button: {
+        justifyContent: 'center',
+        alignSelf: "center",
+        width: '90%',
+        height: 52,
+        borderRadius: 5,
+        backgroundColor: "black",
+        margin: 10,
+    },
+     
+    or: {
+        alignItems: 'center',
+        flexDirection: 'row',
+
+    },
+    line: {
+        width: '40%',
+        height: 0,
+        borderBottomWidth: 1,
+        borderBottomColor: '#9098B1'
+    },
+    chu: {
+        margin: 5,
         fontWeight: 'bold',
+        fontSize: 14,
+        color: '#9098B1'
     },
-    forgotPasswordButton: {
-        marginTop: 16,
-        alignSelf: 'center',
+    textGG: {
+
+        marginLeft: 50,
+        marginRight: 50,
+        fontWeight: 'bold',
+        fontSize: 15,
+        color: '#9098B1'
     },
-    forgotPasswordText: {
-        textAlign: 'center',
-        fontSize: 16,
-        color: '#1877F2',
+    textFB: {
+        marginLeft: 45,
+        marginRight: 40,
+        fontWeight: 'bold',
+        fontSize: 15,
+        color: '#9098B1'
     },
+    forget: {
+        marginTop: 7,
+        fontWeight: 'bold',
+        fontSize: 14,
+        color: 'black'
+    },
+    singin: {
+        marginTop: 7,
+        flexDirection: 'row',
+    },
+    inputSingin: {
+        fontWeight: 'bold',
+        fontSize: 14,
+        color: 'black'
+    }
 
 })
