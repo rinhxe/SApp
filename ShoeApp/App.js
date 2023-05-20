@@ -9,13 +9,15 @@ import Register from "./compoment/Register";
 import Home from "./compoment/Home";
 import Cart from "./compoment/Cart";
 import ProductDetail from "./compoment/ProductDetail";
+import SplapshScreen2 from './compoment/SplashScreen2';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName='SplashScreen'>
-          <Stack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
+          <Stack.Screen name='SplashScreen2' component={SplapshScreen2} options={{ headerShown: false }} />
           <Stack.Screen name='Login' component={Login}  options={{ headerShown: false, }} />
           <Stack.Screen name='Register' component={Register} options={{ title: 'Đăng Ký' }} />
             <Stack.Screen name='Home' component={Home} options={{ title: 'Trang Chủ'}} />

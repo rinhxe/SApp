@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 
 const SplapshScreen = (props) => {
     setTimeout(() => {
-        props.navigation.navigate('Login');
+        props.navigation.navigate('SplashScreen2');
     }, 3000);
     return (
         < View style={styles.container} >
