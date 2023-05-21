@@ -94,7 +94,7 @@ function Register({ navigation }) {
                         email,
                         pass,
                     };
-                    push(ref(database, "registrations/" + userId), registrationData)
+                    set(ref(database, "registrations/" + userId), registrationData)
                         .then(() => {
                             alert("Đăng ký thành công");
                             setTimeout(() => {
