@@ -1,22 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableHighlight, StyleSheet, Text, Image } from 'react-native';
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getDatabase , set, ref,push, remove, onValue  } from "firebase/database";
-const firebaseConfig = {
-    apiKey: "AIzaSyD0X9cxLe53dVqE7goDV-2Rl34LjiuebYc",
-    authDomain: "shoeapp-4dd7b.firebaseapp.com",
-    databaseURL: "https://shoeapp-4dd7b-default-rtdb.firebaseio.com",
-    projectId: "shoeapp-4dd7b",
-    storageBucket: "shoeapp-4dd7b.appspot.com",
-    messagingSenderId: "85092758334",
-    appId: "1:85092758334:web:58f1750f345d8d2888f26f",
-    measurementId: "G-8KYWND93DR"
-};
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+import { getDatabase, set, ref, push, remove, onValue } from "firebase/database";
+import firebase from '../config/FirebaseConfig';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+
 
 function Register({ navigation }) {
 
@@ -34,8 +22,9 @@ function Register({ navigation }) {
     const [ktnhaplai, setktnhaplai] = useState(true)
 
     const validate = () => {
+        const reEmail = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
-        if (nhaplai.length == 0 || pass.length == 0 || fullname.length == 0 || email.length == 0 || !/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email) || pass != nhaplai) {
+        if (nhaplai.length == 0 || pass.length == 0 || fullname.length == 0 || email.length == 0 || !reEmail.test(email) || pass != nhaplai) {
 
             if (fullname.length == 0) {
                 setcheckfullname(false)
@@ -46,7 +35,7 @@ function Register({ navigation }) {
             if (email.length == 0) {
                 setcheckemail(false)
                 setvalidateEmail(true)
-            } else if (!/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email)) {
+            } else if (!reEmail.test(email)) {
                 setvalidateEmail(false)
                 setcheckemail(true)
             }
@@ -77,7 +66,6 @@ function Register({ navigation }) {
             setcheckfullname(true)
             setcheckpass(true)
             setcheckemail(true)
-
             setvalidateEmail(true)
             setktnhaplai(true)
 
@@ -91,25 +79,39 @@ function Register({ navigation }) {
 
         if (validate() == false) return
         if (validate() == true) {
-            const database = getDatabase();
-            const registrationData = {
-                fullname,
-                email,
-                pass,
-            };
-            push(ref(database, "registrations/"), registrationData)
-                .then(() => {
-                    alert("Đăng ký thành công");
-                    setTimeout(() => {
-                        navigation.navigate("Login");
-                    }, 0);
+            const database = getDatabase(firebase);
+            const auth = getAuth(firebase);
 
+            createUserWithEmailAndPassword(auth, email, pass)
+                .then((userCredential) => {
+                    // Lấy ID của người dùng đã đăng ký thành công
+                    const userId = userCredential.user.uid;
+                    console.log('ID của người dùng:', userId);
 
+                    // Lưu thông tin người dùng vào Realtime Database
+                    const registrationData = {
+                        fullname,
+                        email,
+                        pass,
+                    };
+                    push(ref(database, "registrations/" + userId), registrationData)
+                        .then(() => {
+                            alert("Đăng ký thành công");
+                            setTimeout(() => {
+                                navigation.navigate("Login");
+                            }, 0);
+                        })
+                        .catch((error) => {
+                            console.error("Lỗi khi đăng ký:", error);
+                            alert("Đăng ký thất bại");
+                        });
                 })
                 .catch((error) => {
-                    console.error("Lỗi khi đăng ký:", error);
-                    alert("Đăng ký thất bại");
+                    console.error('Đăng ký thất bại:', error);
                 });
+
+
+
         }
     };
 
@@ -210,5 +212,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 14,
         color: 'black'
-    } 
+    }
 })

@@ -7,8 +7,13 @@ import React from 'react'
 import { useState } from 'react'
 import { Alert } from 'react-native';
 
+import firebase from '../config/FirebaseConfig';
+import { getDatabase, set, ref, push, remove, onValue } from "firebase/database";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from '@firebase/auth';
 
 const Login = ({ navigation }) => {
+    const [listUser, setListUser] = useState([]);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -20,13 +25,16 @@ const Login = ({ navigation }) => {
     const [ktpass, setktpass] = useState(true)
 
     const validate = () => {
-        if (email.length == 0 || !/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email) || password.length == 0) {
+
+        const reEmail = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+        if (email.length == 0 || !reEmail.test(email) || password.length == 0) {
 
 
             if (email.length == 0) {
                 setcheckemail(false)
                 setvalidateEmail(true)
-            } else if (!/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email)) {
+            } else if (!reEmail.test(email)) {
                 setvalidateEmail(false)
                 setcheckemail(true)
             }
@@ -59,34 +67,56 @@ const Login = ({ navigation }) => {
     const handleLogin = () => {
         if (validate() == false) return
         if (validate() == true) {
+            const database = getDatabase(firebase);
+            const auth = getAuth(firebase);
             // Xử lý logic đăng nhập
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const userId = userCredential.user.uid;
+                    console.log('ID người dùng đã đăng nhập:', userId);
 
-            const correctEmail = "admin@gmail.com";
-            const correctPassword = "admin";
+                    // Lấy dữ liệu từ Realtime Database
+                    const usersRef = ref(database, '/registrations/' + userId);
+                    onValue(usersRef, (snapshot) => {
+                        const usersData = snapshot.val();
 
-            if (email === correctEmail && password === correctPassword) {
-                navigation.navigate('Home');
+                        setListUser(usersData);
+                        console.log('Dữ liệu người dùng:', usersData);
+                        
+                        navigation.navigate('Home');
 
-                setcheckemail(true)
-                setcheckpass(true)
-                setvalidateEmail(true)
-                setktpass(true)
-                setcheckuser(true)
-            } else {
-                if (email != correctEmail) {
-                    setcheckuser(false)
-                } else if (email === correctEmail) {
-                    setcheckuser(true)
-                    setktpass(false)
-                }
+                    });
+                })
+                .catch((error) => {
+                    console.error('Lỗi đăng nhập:', error);
+                });
+            // const correctEmail = "admin@gmail.com";
+            // const correctPassword = "admin";
 
-            }
+            // if (email === listUser.email && password === listUser.pass) {
+            //     navigation.navigate('Home');
+
+            //     setcheckemail(true)
+            //     setcheckpass(true)
+            //     setvalidateEmail(true)
+            //     setktpass(true)
+            //     setcheckuser(true)
+            // } else {
+            //     if (email != listUser.email) {
+            //         setcheckuser(false)
+            //     } else if (email === listUser.email) {
+            //         setcheckuser(true)
+            //         setktpass(false)
+            //     }
+
+            // }
         }
 
     }; // end hàm đăng nhập
     const handleForgotPassword = () => {
-        Linking.openURL('tel:113');
+        Linking.openURL('tel:19001331');
     }; // end quên mật khẩu
+
 
     return (
 
@@ -140,7 +170,7 @@ const Login = ({ navigation }) => {
 
             <View style={styles.or} >
                 <View style={styles.line} />
-                <Text style={styles.textOR}>OR</Text>
+                <Text>OR</Text>
                 <View style={styles.line} />
             </View>
 
@@ -229,7 +259,7 @@ const styles = StyleSheet.create({
         backgroundColor: "black",
         margin: 10,
     },
-     
+
     or: {
         alignItems: 'center',
         flexDirection: 'row',
