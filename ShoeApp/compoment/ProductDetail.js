@@ -1,12 +1,29 @@
 import React from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native';
-
-function ProductDetail({ route }) {
+import firebase from '../config/FirebaseConfig';
+import { getDatabase, set, ref, push, remove, onValue } from "firebase/database";
+import { getAuth } from "firebase/auth";
+function ProductDetail({ route, navigation }) {
     const { product } = route.params;
 
     const addToCart = () => {
         // Xử lý thêm sản phẩm vào giỏ hàng
-        console.log('Sản phẩm đã được thêm vào giỏ hàng:', product);
+        const auth = getAuth(firebase);
+        const userId = auth.currentUser.uid;
+
+        const database = getDatabase(firebase);
+
+        push(ref(database, `Cart/${userId}`), product)
+            .then((newRef) => {
+                const cartItemId = newRef.key;
+                console.log('người dùng với id:', userId);
+                console.log('Đã thêm sản phẩm vào giỏ hàng:', product);
+                console.log('ID của sản phẩm trong giỏ hàng:', cartItemId);
+                navigation.navigate('Cart');
+            })
+            .catch((error) => {
+                console.error('Lỗi thêm sản phẩm vào giỏ hàng:', error);
+            });
     };
 
     return (

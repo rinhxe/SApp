@@ -3,7 +3,7 @@ import { View, TextInput, TouchableHighlight, StyleSheet, Text, Image } from 're
 
 import { getDatabase, set, ref, push, remove, onValue } from "firebase/database";
 import firebase from '../config/FirebaseConfig';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,fetchSignInMethodsForEmail  } from 'firebase/auth';
 
 
 function Register({ navigation }) {
@@ -15,11 +15,14 @@ function Register({ navigation }) {
 
     const [checkfullname, setcheckfullname] = useState(true)
     const [checkemail, setcheckemail] = useState(true)
+    const [emailExists, setEmailExists] = useState(false);
+
     const [checkpass, setcheckpass] = useState(true)
     const [checknhaplai, setchecknhaplai] = useState(true)
 
     const [validateEmail, setvalidateEmail] = useState(true)
     const [ktnhaplai, setktnhaplai] = useState(true)
+
 
     const validate = () => {
         const reEmail = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -82,6 +85,12 @@ function Register({ navigation }) {
             const database = getDatabase(firebase);
             const auth = getAuth(firebase);
 
+            // tìm kiếm, Kiểm tra email đã tồn tại hay chưa
+            fetchSignInMethodsForEmail(auth, email)
+                .then((signInMethods) => {
+                    if (signInMethods.length > 0) {
+                        setEmailExists(true);
+                    } else {
             createUserWithEmailAndPassword(auth, email, pass)
                 .then((userCredential) => {
                     // Lấy ID của người dùng đã đăng ký thành công
@@ -109,6 +118,11 @@ function Register({ navigation }) {
                 .catch((error) => {
                     console.error('Đăng ký thất bại:', error);
                 });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Lỗi khi kiểm tra email:', error);
+                });
 
 
 
@@ -133,11 +147,12 @@ function Register({ navigation }) {
             <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginLeft: 23 }}>
                 <Text style={{ fontSize: 13, color: 'red' }}>{checkemail ? '' : 'Vui lòng nhập Email'}</Text>
                 <Text style={{ fontSize: 13, color: 'red' }}>{validateEmail ? '' : 'Email sai định dạng'}</Text>
+                <Text style={{ fontSize: 13, color: 'red' }}>{emailExists ? 'Email đã tồn tại' : ''}</Text>
             </View>
             <TextInput secureTextEntry={true} placeholder='Password' style={styles.nhap} onChangeText={(txt) => setpass(txt)} />
             <Text style={{ alignSelf: 'flex-start', marginLeft: 23, fontSize: 13, color: 'red' }}>
-                {checkpass ? '' : 'Vui lòng nhập Pass'}
-                {checkpass ? 'Mật khẩu phải từ 6 kí tự trở lên' : ''}
+                {checkpass ? '' : 'Vui lòng nhập Pass.'}
+                {checkpass ?   '' : 'Mật khẩu phải từ 6 kí tự trở lên'}
             </Text>
             <TextInput secureTextEntry={true} placeholder='Password Again' style={styles.nhap} onChangeText={(txt) => setnhaplai(txt)} />
             <View style={{ alignSelf: 'flex-start', marginLeft: 23, flexDirection: 'row' }}>
@@ -146,7 +161,10 @@ function Register({ navigation }) {
             </View>
 
 
-            <TouchableHighlight activeOpacity={1} underlayColor="black" style={styles.buton}
+            <TouchableHighlight
+                activeOpacity={1}
+                underlayColor="gray"
+                style={styles.buton}
                 onPress={Save}
             >
                 <Text style={styles.textButon}  >
@@ -187,7 +205,6 @@ const styles = StyleSheet.create({
         height: 52,
         borderRadius: 5,
         backgroundColor: "black",
-
         margin: 10,
     },
     textButon: {
