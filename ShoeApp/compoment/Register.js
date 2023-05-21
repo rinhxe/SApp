@@ -24,7 +24,7 @@ function Register({ navigation }) {
     const validate = () => {
         const reEmail = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
-        if (nhaplai.length == 0 || pass.length == 0 || fullname.length == 0 || email.length == 0 || !reEmail.test(email) || pass != nhaplai) {
+        if (nhaplai.length == 0 || pass.length == 0 ||  pass.length < 6|| fullname.length == 0 || email.length == 0 || !reEmail.test(email) || pass != nhaplai) {
 
             if (fullname.length == 0) {
                 setcheckfullname(false)
@@ -135,7 +135,10 @@ function Register({ navigation }) {
                 <Text style={{ fontSize: 13, color: 'red' }}>{validateEmail ? '' : 'Email sai định dạng'}</Text>
             </View>
             <TextInput secureTextEntry={true} placeholder='Password' style={styles.nhap} onChangeText={(txt) => setpass(txt)} />
-            <Text style={{ alignSelf: 'flex-start', marginLeft: 23, fontSize: 13, color: 'red' }}>{checkpass ? '' : 'Vui lòng nhập Pass'}</Text>
+            <Text style={{ alignSelf: 'flex-start', marginLeft: 23, fontSize: 13, color: 'red' }}>
+                {checkpass ? '' : 'Vui lòng nhập Pass'}
+                {checkpass ? 'Mật khẩu phải từ 6 kí tự trở lên' : ''}
+            </Text>
             <TextInput secureTextEntry={true} placeholder='Password Again' style={styles.nhap} onChangeText={(txt) => setnhaplai(txt)} />
             <View style={{ alignSelf: 'flex-start', marginLeft: 23, flexDirection: 'row' }}>
                 <Text style={{ fontSize: 13, color: 'red' }}>{checknhaplai ? '' : 'Vui lòng nhập lại Pass'}</Text>
