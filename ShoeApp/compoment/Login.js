@@ -53,7 +53,8 @@ const Login = ({ navigation }) => {
                 setktpass(true)
             }
             return false
-        } else {
+        }
+        else {
             setcheckpass(true)
             setcheckemail(true)
 
@@ -62,6 +63,7 @@ const Login = ({ navigation }) => {
 
             return true
         }
+
     }
 
     const handleLogin = () => {
@@ -88,7 +90,7 @@ const Login = ({ navigation }) => {
                     });
                 })
                 .catch((error) => {
-                    console.error('Lỗi đăng nhập:', error);
+                    alert('Sai thông tin đăng nhập');
                 });
             // const correctEmail = "admin@gmail.com";
             // const correctPassword = "admin";

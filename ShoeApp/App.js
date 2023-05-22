@@ -10,6 +10,7 @@ import Home from "./compoment/Home";
 import Cart from "./compoment/Cart";
 import ProductDetail from "./compoment/ProductDetail";
 import SplapshScreen2 from './compoment/SplashScreen2';
+import User from "./compoment/User";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -23,6 +24,7 @@ export default function App() {
             <Stack.Screen name='Home' component={Home} options={{ title: 'Trang Chủ'}} />
           <Stack.Screen name='Cart' component={Cart} options={{ title: 'Giỏ hàng'}} />
           <Stack.Screen name='ProductDetail' component={ProductDetail} options={{ title: 'Chi Tiết Sản Phẩm'}} />
+            <Stack.Screen name='User' component={User} options={{ title: 'Thông tin người dùng'}} />
         </Stack.Navigator>
       </NavigationContainer>
   );

@@ -21,6 +21,9 @@ function Home({ navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
+                <TouchableOpacity style={styles.userIconContainer} onPress={() => navigation.navigate('User')}>
+                    <FontAwesome name="user" size={29} color="black" />
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.cartIconContainer} onPress={() => navigation.navigate('Cart')}>
                     <FontAwesome name="shopping-cart" size={29} color="black" />
                     <View style={styles.cartCount}>
@@ -54,14 +57,14 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         paddingHorizontal: 16,
         paddingTop: 16,
     },
+    userIconContainer: {},
     cartIconContainer: {
         marginBottom: 10,
         position: 'relative',
-        marginRight: 16,
     },
     cartCount: {
         position: 'absolute',
