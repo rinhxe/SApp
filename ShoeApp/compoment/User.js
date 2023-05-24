@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity ,Linking } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, off, onValue, ref } from 'firebase/database';
 import firebase from '../config/FirebaseConfig';
@@ -43,7 +43,11 @@ function User({ navigation }) {
 
     return (
         <View style={styles.container}>
+           
             <View style={styles.header}>
+
+            <View style={styles.hinh}/>
+
                 <Image
                     source={{
                         uri:
@@ -92,25 +96,37 @@ function User({ navigation }) {
 export default User;
 
 const styles = StyleSheet.create({
+    hinh:{
+        marginTop:10,
+        width: '100%',
+        height: 150,
+        backgroundColor:"#EBF0F0",
+        borderBottomEndRadius:100, 
+        borderBottomStartRadius:100,
+        borderWidth: 1,
+        borderColor: 'black',
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',
     },
     header: {
-        marginBottom:20,
-        backgroundColor:'#830f8c',
+
         alignItems: 'center',
         paddingVertical: 16,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
     },
     avatar: {
+        marginTop: 130,
+        position: 'absolute',
         width: 100,
         height: 100,
         borderRadius: 50,
         marginBottom: 16,
     },
     userId: {
+        marginTop: 14,
         fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 8,
