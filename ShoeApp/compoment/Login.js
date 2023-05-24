@@ -53,8 +53,7 @@ const Login = ({ navigation }) => {
                 setktpass(true)
             }
             return false
-        }
-        else {
+        } else {
             setcheckpass(true)
             setcheckemail(true)
 
@@ -63,7 +62,6 @@ const Login = ({ navigation }) => {
 
             return true
         }
-
     }
 
     const handleLogin = () => {
@@ -77,20 +75,21 @@ const Login = ({ navigation }) => {
                     const userId = userCredential.user.uid;
                     console.log('ID người dùng đã đăng nhập:', userId);
 
-                    // Lấy dữ liệu từ Realtime Database
+                    // Lấy dữ liệu từ Realtime Database 
                     const usersRef = ref(database, '/registrations/' + userId);
+
                     onValue(usersRef, (snapshot) => {
                         const usersData = snapshot.val();
 
                         setListUser(usersData);
                         console.log('Dữ liệu người dùng:', usersData);
                         
-                        navigation.navigate('Home');
+                        navigation.navigate('TabNavi');
 
                     });
                 })
                 .catch((error) => {
-                    alert('Sai thông tin đăng nhập');
+                    console.error('Lỗi đăng nhập:', error);
                 });
             // const correctEmail = "admin@gmail.com";
             // const correctPassword = "admin";

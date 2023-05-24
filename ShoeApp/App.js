@@ -11,6 +11,7 @@ import Cart from "./compoment/Cart";
 import ProductDetail from "./compoment/ProductDetail";
 import SplapshScreen2 from './compoment/SplashScreen2';
 import User from "./compoment/User";
+import TabNavi from './TabNavi';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -20,6 +21,7 @@ export default function App() {
         <Stack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
           <Stack.Screen name='SplashScreen2' component={SplapshScreen2} options={{ headerShown: false }} />
           <Stack.Screen name='Login' component={Login}  options={{ headerShown: false, }} />
+          <Stack.Screen name='TabNavi' component={TabNavi}  options={{ headerShown: false, }} />
           <Stack.Screen name='Register' component={Register} options={{ title: 'Đăng Ký' }} />
             <Stack.Screen name='Home' component={Home} options={{ title: 'Trang Chủ'}} />
           <Stack.Screen name='Cart' component={Cart} options={{ title: 'Giỏ hàng'}} />
