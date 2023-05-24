@@ -27,29 +27,46 @@ function Cart({ navigation }) {
         };
     }, []);
 
-    const handleBuyNow = (cartProducts) => {
-        console.log('Đang mua sản phẩm:', cartProducts);
+    const handleBuyNow = (product) => {
+        console.log('Đang mua sản phẩm:', product);
     };
+        const handleRemoveProduct = (productId) => {
+            const auth = getAuth(firebase);
+            const userId = auth.currentUser.uid;
+
+            const database = getDatabase(firebase);
+            const cartRef = ref(database, `Cart/${userId}/${productId}`);
+
+
+            remove(cartRef)
+                .then(() => {
+                    console.log('Đã xóa sản phẩm thành công');
+                })
+                .catch((error) => {
+                    console.error('Lỗi xóa sản phẩm:', error);
+                });
+        };
+
 
     return (
         <View style={styles.container}>
-            {cartProducts.map((cartProducts) => (
-                <View key={cartProducts.id} style={styles.productContainer}>
+            {cartProducts.map((product) => (
+                <View key={product.id} style={styles.productContainer}>
                     <View style={styles.productBox}>
-                        <Image source={{ uri: cartProducts.search_image }} style={styles.productImage} />
+                        <Image source={{ uri: product.search_image }} style={styles.productImage} />
                         <View style={styles.productInfo}>
-                            <Text style={styles.productName}>{cartProducts.brands_filter_facet}</Text>
-                            <Text style={styles.productPrice}>{cartProducts.price}</Text>
+                            <Text style={styles.productName}>{product.brands_filter_facet}</Text>
+                            <Text style={styles.productPrice}>{product.price}</Text>
                         </View>
                         <TouchableOpacity
                             style={styles.buyNowButton}
-                            onPress={() => handleBuyNow(cartProducts)}
+                            onPress={() => handleBuyNow(product)}
                         >
                             <Text style={styles.buyNowButtonText}>Mua Ngay</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.removeButton}
-                            onPress={() => handleRemoveProduct(cartProducts.id)}
+                            onPress={() => handleRemoveProduct(product.id)}
                         >
                             <Text style={styles.removeButtonText}>Xóa</Text>
                         </TouchableOpacity>
@@ -59,6 +76,7 @@ function Cart({ navigation }) {
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {
