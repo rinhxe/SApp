@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, Animated,ScrollView  } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import { getDatabase, ref, onValue, off, remove } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,17 +8,31 @@ import firebase from '../config/FirebaseConfig';
 function Cart({ navigation }) {
     const [cartProducts, setCartProducts] = useState([]);
     const [fadeAnim] = useState(new Animated.Value(0));
+    const auth = getAuth(firebase);
+    const database = getDatabase(firebase);
 
     useEffect(() => {
-        const auth = getAuth(firebase);
+
+        fetchData();
+
+    }, []);
+
+    const fetchData = () => {
         const userId = auth.currentUser.uid;
 
-        const database = getDatabase(firebase);
+        
         const cartRef = ref(database, `Cart/${userId}`);
+
         onValue(cartRef, (snapshot) => {
+
             const cartData = snapshot.val();
+
             if (cartData) {
-                const products = Object.values(cartData);
+                const products = Object.keys(cartData).map((key) => ({
+                    id: key,
+                    ...cartData[key],
+                }));
+
                 setCartProducts(products);
             } else {
                 setCartProducts([]);
@@ -27,17 +41,15 @@ function Cart({ navigation }) {
         return () => {
             off(cartRef);
         };
-    }, []);
+    }
 
     const handleBuyNow = (product) => {
         console.log('Đang mua sản phẩm:', product);
     };
 
     const handleRemoveProduct = (productId) => {
-        const auth = getAuth(firebase);
         const userId = auth.currentUser.uid;
 
-        const database = getDatabase(firebase);
         const cartRef = ref(database, `Cart/${userId}/${productId}`);
 
         remove(cartRef)
@@ -67,7 +79,7 @@ function Cart({ navigation }) {
     };
 
     return (
-        <ScrollView  style={styles.container}>
+        <ScrollView style={styles.container}>
             {cartProducts.map((product) => (
                 <View key={product.id} style={styles.productContainer}>
                     <View style={styles.productBox}>
@@ -113,7 +125,7 @@ const styles = StyleSheet.create({
     productBox: {
         borderWidth: 3,
         borderColor: '#000000',
-        backgroundColor:'#b2a5a5',
+        backgroundColor: '#b2a5a5',
         borderRadius: 8,
         flexDirection: 'row',
         alignItems: 'center',
@@ -132,7 +144,7 @@ const styles = StyleSheet.create({
     productName: {
         fontSize: 18,
         marginBottom: 8,
-        marginTop:30,
+        marginTop: 30,
     },
     productPrice: {
         fontSize: 16,
