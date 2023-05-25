@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, Animated,ScrollView  } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import { getDatabase, ref, onValue, off, remove } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
@@ -43,6 +43,8 @@ function Cart({ navigation }) {
         remove(cartRef)
             .then(() => {
                 console.log('Đã xóa sản phẩm thành công');
+                const updatedCartProducts = cartProducts.filter((product) => product.id !== productId);
+                setCartProducts(updatedCartProducts);
             })
             .catch((error) => {
                 console.error('Lỗi xóa sản phẩm:', error);
@@ -67,7 +69,7 @@ function Cart({ navigation }) {
     };
 
     return (
-        <ScrollView  style={styles.container}>
+        <ScrollView style={styles.container}>
             {cartProducts.map((product) => (
                 <View key={product.id} style={styles.productContainer}>
                     <View style={styles.productBox}>
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
     productBox: {
         borderWidth: 3,
         borderColor: '#000000',
-        backgroundColor:'#b2a5a5',
+        backgroundColor: '#b2a5a5',
         borderRadius: 8,
         flexDirection: 'row',
         alignItems: 'center',
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
     productName: {
         fontSize: 18,
         marginBottom: 8,
-        marginTop:30,
+        marginTop: 30,
     },
     productPrice: {
         fontSize: 16,
