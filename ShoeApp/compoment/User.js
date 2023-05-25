@@ -95,10 +95,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+        marginTop:30,
     },
     header: {
         marginBottom:20,
-        backgroundColor:'#830f8c',
         alignItems: 'center',
         paddingVertical: 16,
         borderBottomWidth: 1,

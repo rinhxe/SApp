@@ -20,17 +20,17 @@ function Home({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.userIconContainer} onPress={() => navigation.navigate('User')}>
-                    <FontAwesome name="user" size={29} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cartIconContainer} onPress={() => navigation.navigate('Cart')}>
-                    <FontAwesome name="shopping-cart" size={29} color="black" />
-                    <View style={styles.cartCount}>
-                        <Text style={styles.cartCountText}>3</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
+            {/*<View style={styles.header}>*/}
+            {/*    <TouchableOpacity style={styles.userIconContainer} onPress={() => navigation.navigate('User')}>*/}
+            {/*        <FontAwesome name="user" size={29} color="black" />*/}
+            {/*    </TouchableOpacity>*/}
+            {/*    <TouchableOpacity style={styles.cartIconContainer} onPress={() => navigation.navigate('Cart')}>*/}
+            {/*        <FontAwesome name="shopping-cart" size={29} color="black" />*/}
+            {/*        <View style={styles.cartCount}>*/}
+            {/*            <Text style={styles.cartCountText}>3</Text>*/}
+            {/*        </View>*/}
+            {/*    </TouchableOpacity>*/}
+            {/*</View>*/}
             <View style={styles.separator}></View>
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 {products.map((product) => (
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'space-evenly',
         padding: 16,
+        marginTop:30,
     },
     productItem: {
         width: '48%',
