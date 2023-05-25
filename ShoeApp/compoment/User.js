@@ -43,7 +43,7 @@ function User({ navigation }) {
 
     return (
         <View style={styles.container}>
-           
+
             <View style={styles.header}>
 
             <View style={styles.hinh}/>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 150,
         backgroundColor:"#EBF0F0",
-        borderBottomEndRadius:100, 
+        borderBottomEndRadius:100,
         borderBottomStartRadius:100,
         borderWidth: 1,
         borderColor: 'black',
@@ -112,11 +112,7 @@ const styles = StyleSheet.create({
         marginTop:30,
     },
     header: {
-<<<<<<< HEAD
         marginBottom:20,
-=======
-
->>>>>>> 4c7f6a916015962eb269bb01a3c7659dc38c5180
         alignItems: 'center',
         paddingVertical: 16,
         borderBottomWidth: 1,
