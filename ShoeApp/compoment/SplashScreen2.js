@@ -9,7 +9,7 @@ const SplapshScreen2 = (props) => {
     useEffect(() => {
         const interval = setInterval(() => {
             if (swiperRef.current && swiperRef.current.scrollBy) {
-                swiperRef.current.scrollBy(1);
+                swiperRef.current.scrollBy(1); //di chuyen anh tiep
             }
         }, 2000); // Thời gian tự động chuyển ảnh (ms)
 
