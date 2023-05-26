@@ -46,7 +46,7 @@ function User({ navigation }) {
 
             <View style={styles.header}>
 
-            <View style={styles.hinh}/>
+                <View style={styles.hinh} />
 
                 <Image
                     source={{
@@ -78,10 +78,17 @@ function User({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.section}
-                    onPress={() => navigation.navigate('ChatScreen', { userId: auth.currentUser.uid, userName: userData.fullname,})}
+                    onPress={() => navigation.navigate('ChatScreen', { userId: auth.currentUser.uid, userName: userData.fullname, })}
                 >
                     <Icon name="comment" size={20} color="green" />
                     <Text style={styles.sectionText}>Chat Box</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.section}
+                    onPress={() => navigation.navigate('Oder', { userId: auth.currentUser.uid})}
+                >
+                    <Icon name="shopping-cart" size={20} color="cyan" />
+                    <Text style={styles.sectionText}>Đơn mua</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.section}
@@ -103,23 +110,23 @@ function User({ navigation }) {
 export default User;
 
 const styles = StyleSheet.create({
-    hinh:{
-        marginTop:10,
+    hinh: {
+        marginTop: 10,
         width: '100%',
         height: 150,
-        backgroundColor:"#EBF0F0",
-        borderBottomEndRadius:100,
-        borderBottomStartRadius:100,
+        backgroundColor: "#EBF0F0",
+        borderBottomEndRadius: 100,
+        borderBottomStartRadius: 100,
         borderWidth: 1,
         borderColor: 'black',
     },
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        marginTop:30,
+        marginTop: 30,
     },
     header: {
-        marginBottom:20,
+        marginBottom: 20,
         alignItems: 'center',
         paddingVertical: 16,
         borderBottomWidth: 1,

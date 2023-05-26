@@ -55,7 +55,7 @@ function Cart({ route, navigation }) {
                 console.log('người dùng với id:', userId);
                 console.log('Đã thêm sản phẩm vào giỏ hàng:', cartProducts);
                 console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
-                navigation.navigate('Oder');
+                navigation.navigate('Oder', { userId: userId });
             })
             .catch((error) => {
                 console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
@@ -74,7 +74,7 @@ function Cart({ route, navigation }) {
                 console.log('người dùng với id:', userId);
                 console.log('Đã thêm sản phẩm vào giỏ hàng:', product);
                 console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
-                navigation.navigate('Oder');
+                navigation.navigate('Oder', { userId: userId });
             })
             .catch((error) => {
                 console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
