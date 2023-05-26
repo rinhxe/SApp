@@ -31,6 +31,7 @@ function Home({ navigation }) {
             {/*        </View>*/}
             {/*    </TouchableOpacity>*/}
             {/*</View>*/}
+            
             <View style={styles.separator}></View>
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 {products.map((product) => (
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'space-evenly',
         padding: 16,
-        marginTop:30,
+        marginTop: 30,
     },
     productItem: {
         width: '48%',

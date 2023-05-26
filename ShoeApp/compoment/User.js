@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 function User({ navigation }) {
     const [userData, setUserData] = useState(null);
-
+    const auth = getAuth(firebase);
     useEffect(() => {
         const auth = getAuth(firebase);
         const userId = auth.currentUser.uid;
@@ -75,6 +75,13 @@ function User({ navigation }) {
                 >
                     <Icon name="question-circle" size={20} color="red" />
                     <Text style={styles.sectionText}>Hỗ trợ</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.section}
+                    onPress={() => navigation.navigate('ChatScreen', { userId: auth.currentUser.uid, userName: userData.fullname,})}
+                >
+                    <Icon name="comment" size={20} color="green" />
+                    <Text style={styles.sectionText}>Chat Box</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.section}
