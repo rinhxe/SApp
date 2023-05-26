@@ -4,7 +4,8 @@ import Home from "./compoment/Home";
 import Favourite from "./compoment/Favourite";
 import Cart from "./compoment/Cart";
 import Search from "./compoment/Search";
-import User from "./compoment/User";
+import User from "./compoment/User";  
+import NotLoginUser from "./compoment/NotLoginUser";
 const Tab = createBottomTabNavigator();
 
 const TabNavi = () => {
@@ -41,8 +42,9 @@ const TabNavi = () => {
                     tabBarIcon: ({ color, size }) => <Ionicons name='cart' color={color} size={size} />
                 }} />
            
-            <Tab.Screen name={"User"} component={User}
+            <Tab.Screen name={"NotLoginUser"} component={NotLoginUser}
                 options={{
+                    tabBarLabel: 'User',
                     tabBarIcon: ({ color, size }) => <Ionicons name='person' color={color} size={size} />
 
                 }}
