@@ -12,6 +12,7 @@ import ProductDetail from "./compoment/ProductDetail";
 import SplapshScreen2 from './compoment/SplashScreen2';
 import User from "./compoment/User";
 import TabNavi from './TabNavi';
+import ChatScreen from "./compoment/ChatScreen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -27,6 +28,7 @@ export default function App() {
           <Stack.Screen name='Cart' component={Cart} options={{ title: 'Giỏ hàng'}} />
           <Stack.Screen name='ProductDetail' component={ProductDetail} options={{ title: 'Chi Tiết Sản Phẩm'}} />
             <Stack.Screen name='User' component={User} options={{ title: 'Thông tin người dùng'}} />
+          <Stack.Screen name='ChatScreen' component={ChatScreen} options={{ title: 'Nhóm chat cộng đồng'}} />
         </Stack.Navigator>
       </NavigationContainer>
   );
