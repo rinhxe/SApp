@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity, Animated, ScrollView } from 'react-native';
-import { getDatabase, ref, onValue, off, remove } from 'firebase/database';
+import { getDatabase, ref, onValue, off, remove, push, set } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 import firebase from '../config/FirebaseConfig';
 
-function Cart({ navigation }) {
+function Cart({ route, navigation }) {
     const [cartProducts, setCartProducts] = useState([]);
     const [fadeAnim] = useState(new Animated.Value(0));
     const auth = getAuth(firebase);
     const database = getDatabase(firebase);
+    // const { cart } = route.params;
 
     useEffect(() => {
 
@@ -43,7 +44,41 @@ function Cart({ navigation }) {
         };
     }
 
+    const handleBuyNowAll = () => {
+        const userId = auth.currentUser.uid;
+
+        const orderRef = ref(database, `Order/${userId}`);
+
+        push(orderRef, cartProducts)
+            .then((newRef) => {
+                const orderItemId = newRef.key;
+                console.log('người dùng với id:', userId);
+                console.log('Đã thêm sản phẩm vào giỏ hàng:', cartProducts);
+                console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
+                navigation.navigate('Oder');
+            })
+            .catch((error) => {
+                console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
+            });
+        console.log('Đang mua sản phẩm:', cartProducts);
+    }
+
     const handleBuyNow = (product) => {
+        const userId = auth.currentUser.uid;
+
+        const orderRef = ref(database, `Order/${userId}`);
+
+        push(orderRef, product)
+            .then((newRef) => {
+                const orderItemId = newRef.key;
+                console.log('người dùng với id:', userId);
+                console.log('Đã thêm sản phẩm vào giỏ hàng:', product);
+                console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
+                navigation.navigate('Oder');
+            })
+            .catch((error) => {
+                console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
+            });
         console.log('Đang mua sản phẩm:', product);
     };
 
@@ -78,13 +113,24 @@ function Cart({ navigation }) {
         ).start();
     };
 
+    const Sum = () => {
+        let sum = 0;
+        cartProducts.map((product) => {
+            sum += product.price;
+
+        })
+        return sum;
+    }
+    const Count = () => {
+        return cartProducts.length;
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title} >CỬA HÀNG</Text>
             <View style={{ width: '100%', backgroundColor: 'black', height: 1 }} />
-            <View style={{ margin: 15, flexDirection: 'row'}}>
-                <Text>1 </Text>
-                <Text>MẶT HÀNG</Text>
+            <View style={{ margin: 15 }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số lượng: {Count()} MẶT HÀNG</Text>
             </View>
             <ScrollView style={{ padding: 16 }}>
                 {cartProducts.map((product) => (
@@ -119,10 +165,10 @@ function Cart({ navigation }) {
             <View style={{ width: '100%', backgroundColor: 'black', height: 1 }} />
             <View style={{ margin: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 15 }}>Tổng:</Text>
-                <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red', marginRight: 15 }}>18.000.000đ</Text>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red', marginRight: 15 }}>{Sum()} VNĐ</Text>
             </View>
 
-            <TouchableOpacity style={{ backgroundColor: 'black', margin: 7,padding:15 }}>
+            <TouchableOpacity style={{ backgroundColor: 'black', margin: 7, padding: 15 }} onPress={() => handleBuyNowAll()}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
                         THANH TOÁN
