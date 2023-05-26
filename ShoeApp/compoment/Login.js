@@ -84,7 +84,7 @@ const Login = ({ navigation }) => {
                         setListUser(usersData);
                         console.log('Dữ liệu người dùng:', usersData);
                         
-                        navigation.navigate('TabNavi');
+                        navigation.navigate('TabNavi',{ isAuthenticated: true });
 
                     });
                 })
@@ -122,7 +122,9 @@ const Login = ({ navigation }) => {
     return (
 
         <View style={styles.container}>
-
+            <TouchableOpacity style={styles.skipButton} onPress={()=> navigation.navigate('TabNavi')}>
+                <Text style={styles.skipButtonText}>Bỏ qua</Text>
+            </TouchableOpacity>
             <Image source={require('../image/logoapp.png')} />
 
             <Text style={styles.textWelcome}>
@@ -307,6 +309,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 14,
         color: 'black'
-    }
+    },
+    skipButton: {
+        marginTop:50,
+        position: 'absolute',
+        top: 10,
+        right: 10,
+    },
+    skipButtonText: {
+        color: '#07090c',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
 
 })

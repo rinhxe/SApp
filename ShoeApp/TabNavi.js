@@ -4,11 +4,12 @@ import Home from "./compoment/Home";
 import Favourite from "./compoment/Favourite";
 import Cart from "./compoment/Cart";
 import Search from "./compoment/Search";
-import User from "./compoment/User";  
+import User from "./compoment/User";
 import NotLoginUser from "./compoment/NotLoginUser";
 const Tab = createBottomTabNavigator();
 
-const TabNavi = () => {
+const TabNavi = ({ route }) => {
+    const { isAuthenticated } = route.params || { isAuthenticated: false };
     return (
         <Tab.Navigator
             initialRouteName={"Home"}
@@ -37,18 +38,49 @@ const TabNavi = () => {
                     tabBarIcon: ({ color, size }) => <Ionicons name='heart' color={color} size={size} />
                 }} />
 
-            <Tab.Screen name={"Cart"} component={Cart}
-                options={{
-                    tabBarIcon: ({ color, size }) => <Ionicons name='cart' color={color} size={size} />
-                }} />
-           
-            <Tab.Screen name={"NotLoginUser"} component={NotLoginUser}
-                options={{
-                    tabBarLabel: 'User',
-                    tabBarIcon: ({ color, size }) => <Ionicons name='person' color={color} size={size} />
+            {/*<Tab.Screen name={"Cart"} component={Cart}*/}
+            {/*    options={{*/}
+            {/*        tabBarIcon: ({ color, size }) => <Ionicons name='cart' color={color} size={size} />*/}
 
-                }}
-            />
+            {/*    }} />*/}
+            {isAuthenticated ? (
+                <Tab.Screen
+                    name="Cart"
+                    component={Cart}
+                    options={{
+                        tabBarIcon: ({ color, size }) => <Ionicons name='cart' color={color} size={size} />
+                    }}
+                />
+            ) : (
+                <Tab.Screen
+                    name="NotLoginUserCart"
+                    component={NotLoginUser}
+                    options={{
+                        tabBarLabel: 'Cart',
+                        tabBarIcon: ({ color, size }) => <Ionicons name='cart' color={color} size={size} />
+                    }}
+                />
+            )}
+
+            {isAuthenticated ? (
+                <Tab.Screen
+                    name="User"
+                    component={User}
+                    options={{
+                        tabBarLabel: 'User',
+                        tabBarIcon: ({ color, size }) => <Ionicons name='person' color={color} size={size} />
+                    }}
+                />
+            ) : (
+                <Tab.Screen
+                    name="NotLoginUser"
+                    component={NotLoginUser}
+                    options={{
+                        tabBarLabel: 'User',
+                        tabBarIcon: ({ color, size }) => <Ionicons name='person' color={color} size={size} />
+                    }}
+                />
+            )}
         </Tab.Navigator>
     )
 }

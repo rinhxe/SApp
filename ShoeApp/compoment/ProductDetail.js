@@ -9,8 +9,9 @@ function ProductDetail({ route, navigation }) {
     const addToCart = () => {
         // Xử lý thêm sản phẩm vào giỏ hàng
         const auth = getAuth(firebase);
-        const userId = auth.currentUser.uid;
-
+        // const userId = auth.currentUser.uid;
+        const userId = auth.currentUser ? auth.currentUser.uid : null;
+        if (userId) {
         const database = getDatabase(firebase);
 
         push(ref(database, `Cart/${userId}`), product)
@@ -24,6 +25,13 @@ function ProductDetail({ route, navigation }) {
             .catch((error) => {
                 console.error('Lỗi thêm sản phẩm vào giỏ hàng:', error);
             });
+        } else {
+
+            console.log('Người dùng chưa đăng nhập');
+            alert('Chưa đăng nhập, vui lòng đăng nhập');
+            navigation.navigate('Login');
+
+        }
     };
 
     return (
