@@ -33,6 +33,32 @@ function ProductDetail({ route, navigation }) {
 
         }
     };
+    const addToFavo = () => {
+        // Xử lý thêm sản phẩm vào giỏ hàng
+        const auth = getAuth(firebase);
+        // const userId = auth.currentUser.uid;
+        const userId = auth.currentUser ? auth.currentUser.uid : null;
+        if (userId) {
+        const database = getDatabase(firebase);
+
+        push(ref(database, `Favourite/${userId}`), product)
+            .then((newRef) => {
+                const cartItemId = newRef.key;
+                console.log('người dùng với id:', userId);
+                console.log('Đã thêm sản phẩm vào yêu thích:', product);
+                console.log('ID của sản phẩm trong yêu thích:', cartItemId); 
+            })
+            .catch((error) => {
+                console.error('Lỗi thêm sản phẩm vào yêu thích:', error);
+            });
+        } else {
+
+            console.log('Người dùng chưa đăng nhập');
+            alert('Chưa đăng nhập, vui lòng đăng nhập');
+            navigation.navigate('Login');
+
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -43,6 +69,9 @@ function ProductDetail({ route, navigation }) {
 
             <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
                 <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.addToCartButton} onPress={addToFavo}>
+                <Text style={styles.addToCartButtonText}>Thêm vào yêu thích</Text>
             </TouchableOpacity>
         </View>
     );

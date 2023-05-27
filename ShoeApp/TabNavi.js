@@ -27,22 +27,31 @@ const TabNavi = ({ route }) => {
                     tabBarIcon: ({ color, size }) => <Ionicons name='home' color={color} size={size} />
                 }}
             />
-             <Tab.Screen name={"Search"} component={Search}
+            <Tab.Screen name={"Search"} component={Search}
                 options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name='search' color={color} size={size} />
 
                 }}
             />
-            <Tab.Screen name={"Favourite"} component={Favourite}
-                options={{
-                    tabBarIcon: ({ color, size }) => <Ionicons name='heart' color={color} size={size} />
-                }} />
 
-            {/*<Tab.Screen name={"Cart"} component={Cart}*/}
-            {/*    options={{*/}
-            {/*        tabBarIcon: ({ color, size }) => <Ionicons name='cart' color={color} size={size} />*/}
 
-            {/*    }} />*/}
+            {isAuthenticated ? (
+                <Tab.Screen name={"Favourite"} component={Favourite}
+                    options={{
+                        tabBarIcon: ({ color, size }) => <Ionicons name='heart' color={color} size={size} />
+                    }} />
+
+            ) : (
+                <Tab.Screen
+                    name="NotLoginUserFav"
+                    component={NotLoginUser}
+                    options={{
+                        tabBarLabel: 'Favourite',
+                        tabBarIcon: ({ color, size }) => <Ionicons name='heart' color={color} size={size} />
+                    }}
+                />
+            )}
+
             {isAuthenticated ? (
                 <Tab.Screen
                     name="Cart"
