@@ -85,9 +85,8 @@ function User({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.section}
-<<<<<<< HEAD
                     onPress={() => navigation.navigate('ChangePassword', { password: userData.pass,userId: auth.currentUser.uid})}
-=======
+
                     onPress={() => navigation.navigate('Oder', { userId: auth.currentUser.uid})}
                 >
                     <Icon name="shopping-cart" size={20} color="cyan" />
@@ -95,8 +94,7 @@ function User({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.section}
-                    onPress={() => console.log('đổi mk')}
->>>>>>> f4152b6c25dfcef8e18d812c9f642dbb08f89b84
+                    onPress={() => navigation.navigate('ChangePassword', { password: userData.pass,userId: auth.currentUser.uid})}
                 >
                     <Icon name="lock" size={20} color="blue" />
                     <Text style={styles.sectionText}>Đổi mật khẩu</Text>
