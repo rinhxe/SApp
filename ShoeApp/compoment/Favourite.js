@@ -2,13 +2,15 @@ import { getAuth } from 'firebase/auth';
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Text, ScrollView, Image, TouchableHighlight, Modal } from "react-native";
 import firebase from '../config/FirebaseConfig';
-import { getDatabase, off, onValue, ref } from 'firebase/database';
+import { getDatabase, off, onValue,remove, ref } from 'firebase/database';
 
 export default function Favourite({ props }) {
   const [favProducts, setFavProducts] = useState([]);
   const [showDialog, setshowDialog] = useState(false);
+  const [showDialogtc, setshowDialogtc] = useState(false);
   const auth = getAuth(firebase);
   const data = getDatabase(firebase);
+  const [id,setid] = useState();
 
   useEffect(() => {
     upData();
@@ -75,8 +77,28 @@ export default function Favourite({ props }) {
     setshowDialog(false);
   }
 
+  const addCart = () => {
+
+  }
+  const Delete =  (productId) => {
+    const userId = auth.currentUser.uid;
+
+    const favRef = ref(data, `Favourite/${userId}/${productId}`);
+
+    remove(favRef)
+        .then(() => {
+            console.log('Đã xóa sản phẩm thành công');
+            setshowDialogtc(false)
+        })
+        .catch((error) => {
+            console.error('Lỗi xóa sản phẩm:', error);
+        });
+};
+ 
   return (
     <View style={styles.container}>
+
+      {/* modal sắp xếp */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -136,6 +158,66 @@ export default function Favourite({ props }) {
         </View>
       </Modal>
 
+      {/* modal tùy chọn */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showDialogtc}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableHighlight
+            activeOpacity={1}
+            underlayColor="rgba(0, 0, 0, 0.5)"
+            onPress={() => { setshowDialogtc(false) }}
+          >
+            <View />
+          </TouchableHighlight>
+
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalHeaderText}>TÙY CHỌN</Text>
+              <TouchableHighlight
+                activeOpacity={0.6}
+                underlayColor="transparent"
+                style={styles.modalCloseButton}
+                onPress={() => { setshowDialogtc(false) }}
+              >
+                <Image style={styles.modalCloseIcon} source={require('../image/close.png')} />
+              </TouchableHighlight>
+            </View>
+
+            <View style={styles.modalDivider} />
+
+            <TouchableHighlight
+              activeOpacity={0.6}
+              underlayColor="white"
+              style={styles.modalOption}
+              onPress={addCart}
+            >
+
+              <View style={{ flexDirection: 'row' }}>
+                <Image source={require('../image/addcar.png')} style={{ marginRight: 10 }} />
+                <Text style={styles.modalOptionText}>Thêm vào giỏ hàng</Text>
+
+              </View>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+              activeOpacity={0.6}
+              underlayColor="white"
+              style={styles.modalOption}
+              onPress={()=>Delete(id)}
+            >
+              <View style={{ flexDirection: 'row' }}>
+                <Image source={require('../image/delete.png')} style={{ marginRight: 15, marginLeft: 5 }} />
+                <Text style={styles.modalOptionText}>Xóa khỏi danh sách yêu thích</Text>
+
+              </View>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </Modal>
+
       <Text style={styles.title}>DANH SÁCH YÊU THÍCH </Text>
       <View style={styles.titleDivider} />
       <View style={styles.infoContainer}>
@@ -160,9 +242,19 @@ export default function Favourite({ props }) {
                 <View style={styles.addButton}>
                   <Text style={styles.addButtonLabel}>Thêm vào giỏ</Text>
                   <Image style={styles.addButtonIcon} source={require('../image/addcar.png')} />
+
                 </View>
               </View>
-              <Image source={require('../image/More.png')} />
+
+              <TouchableHighlight
+                activeOpacity={0.6}
+                underlayColor="white"
+                onPress={() => { setshowDialogtc(true),setid(product.id) }}
+              >
+                <Image source={require('../image/More.png')} />
+              </TouchableHighlight>
+
+              
             </View>
           </View>
         ))}
