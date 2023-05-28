@@ -2,15 +2,18 @@ import { getAuth } from 'firebase/auth';
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Text, ScrollView, Image, TouchableHighlight, Modal } from "react-native";
 import firebase from '../config/FirebaseConfig';
-import { getDatabase, off, onValue,remove, ref } from 'firebase/database';
+import { getDatabase, off, onValue, remove, ref, push } from 'firebase/database';
 
-export default function Favourite({ props }) {
+export default function Favourite({ navigation }) {
   const [favProducts, setFavProducts] = useState([]);
   const [showDialog, setshowDialog] = useState(false);
   const [showDialogtc, setshowDialogtc] = useState(false);
   const auth = getAuth(firebase);
   const data = getDatabase(firebase);
-  const [id,setid] = useState();
+  const [id, setid] = useState();
+  const [name, setName] = useState();
+  const [pice, setpice] = useState();
+  const [img, setImg] = useState();
 
   useEffect(() => {
     upData();
@@ -77,24 +80,85 @@ export default function Favourite({ props }) {
     setshowDialog(false);
   }
 
-  const addCart = () => {
 
-  }
-  const Delete =  (productId) => {
+  const Delete = (productId) => {
     const userId = auth.currentUser.uid;
 
     const favRef = ref(data, `Favourite/${userId}/${productId}`);
 
     remove(favRef)
-        .then(() => {
-            console.log('Đã xóa sản phẩm thành công');
-            setshowDialogtc(false)
-        })
-        .catch((error) => {
-            console.error('Lỗi xóa sản phẩm:', error);
-        });
-};
- 
+      .then(() => {
+        console.log('Đã xóa sản phẩm thành công');
+        setshowDialogtc(false)
+      })
+      .catch((error) => {
+        console.error('Lỗi xóa sản phẩm:', error);
+      });
+  };
+  const addToCart = (product) => {
+    const auth = getAuth(firebase);
+    const userId = auth.currentUser.uid;
+
+    const database = getDatabase(firebase);
+
+    push(ref(database, `Cart/${userId}`), {
+      search_image: product.search_image,
+      price: product.price,
+      brands_filter_facet: product.brands_filter_facet
+    })
+      .then((newRef) => {
+        const cartItemId = newRef.key;
+        console.log('Người dùng với id:', userId);
+        console.log('Đã thêm sản phẩm vào giỏ hàng:', product);
+        console.log('ID của sản phẩm trong giỏ hàng:', cartItemId);
+
+        // Xóa mục yêu thích
+        remove(ref(database, `Favourite/${userId}/${product.id}`))
+          .then(() => {
+            console.log('Đã xóa yêu thích');
+          })
+          .catch((error) => {
+            console.error('Lỗi xóa yêu thích:', error);
+          });
+
+      })
+      .catch((error) => {
+        console.error('Lỗi thêm sản phẩm vào giỏ hàng:', error);
+      });
+  };
+
+  const addCart = (id,img,name,pice) => {
+    const auth = getAuth(firebase);
+    const userId = auth.currentUser.uid;
+
+    const database = getDatabase(firebase);
+
+    push(ref(database, `Cart/${userId}`), {
+      search_image:img,
+      price: pice,
+      brands_filter_facet: name
+    })
+      .then((newRef) => {
+        const cartItemId = newRef.key;
+        console.log('Người dùng với id:', userId); 
+        console.log('ID của sản phẩm trong giỏ hàng:', cartItemId);
+
+        // Xóa mục yêu thích
+        remove(ref(database, `Favourite/${userId}/${id}`))
+          .then(() => {
+           setshowDialogtc(false)
+
+          })
+          .catch((error) => {
+            console.error('Lỗi xóa yêu thích:', error);
+          });
+
+      })
+      .catch((error) => {
+        console.error('Lỗi thêm sản phẩm vào giỏ hàng:', error);
+      });
+  }
+
   return (
     <View style={styles.container}>
 
@@ -192,7 +256,7 @@ export default function Favourite({ props }) {
               activeOpacity={0.6}
               underlayColor="white"
               style={styles.modalOption}
-              onPress={addCart}
+              onPress={()=>addCart(id,img,name,pice)}
             >
 
               <View style={{ flexDirection: 'row' }}>
@@ -206,7 +270,7 @@ export default function Favourite({ props }) {
               activeOpacity={0.6}
               underlayColor="white"
               style={styles.modalOption}
-              onPress={()=>Delete(id)}
+              onPress={() => Delete(id)}
             >
               <View style={{ flexDirection: 'row' }}>
                 <Image source={require('../image/delete.png')} style={{ marginRight: 15, marginLeft: 5 }} />
@@ -240,7 +304,7 @@ export default function Favourite({ props }) {
                 <Text style={styles.productName}>{product.brands_filter_facet}</Text>
                 <Text style={styles.productPrice}>Giá: {product.price} VNĐ</Text>
                 <View style={styles.addButton}>
-                  <Text style={styles.addButtonLabel}>Thêm vào giỏ</Text>
+                  <Text style={styles.addButtonLabel} onPress={() => addToCart(product)}>Thêm vào giỏ</Text>
                   <Image style={styles.addButtonIcon} source={require('../image/addcar.png')} />
 
                 </View>
@@ -249,12 +313,18 @@ export default function Favourite({ props }) {
               <TouchableHighlight
                 activeOpacity={0.6}
                 underlayColor="white"
-                onPress={() => { setshowDialogtc(true),setid(product.id) }}
+                onPress={() => {
+                  setshowDialogtc(true),
+                  setid(product.id),
+                  setImg(product.search_image),
+                  setName(product.brands_filter_facet),
+                  setpice(product.price)
+                }}
               >
                 <Image source={require('../image/More.png')} />
               </TouchableHighlight>
 
-              
+
             </View>
           </View>
         ))}

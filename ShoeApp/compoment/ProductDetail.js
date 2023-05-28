@@ -11,6 +11,7 @@ function ProductDetail({ route, navigation }) {
         const auth = getAuth(firebase);
         // const userId = auth.currentUser.uid;
         const userId = auth.currentUser ? auth.currentUser.uid : null;
+        console.log(product);
         if (userId) {
         const database = getDatabase(firebase);
 
@@ -40,7 +41,7 @@ function ProductDetail({ route, navigation }) {
         const userId = auth.currentUser ? auth.currentUser.uid : null;
         if (userId) {
         const database = getDatabase(firebase);
-
+console.log(product);
         push(ref(database, `Favourite/${userId}`), product)
             .then((newRef) => {
                 const cartItemId = newRef.key;
