@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { Children, useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { getDatabase, ref, onValue, off, remove, push, set } from 'firebase/database';
+import { getDatabase, ref, onValue, off, remove, push, set, child } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import firebase from '../config/FirebaseConfig';
 
@@ -10,6 +10,7 @@ const Oder = ({ route }) => {
     const auth = getAuth(firebase);
     const database = getDatabase(firebase);
     const { userId } = route.params;
+    const dataKey = [];
     useEffect(() => {
 
         fetchData();
@@ -17,29 +18,40 @@ const Oder = ({ route }) => {
     }, []);
 
     const fetchData = () => {
-   
-
-
         const oderRef = ref(database, `Order/${userId}`);
 
         onValue(oderRef, (snapshot) => {
 
-            const oderData = snapshot.val();
+            snapshot.forEach((childSnapshot) => {
+                const oderDataKey = childSnapshot.key;
 
-            if (oderData) {
-                const products = Object.keys(oderData).map((key) => ({
-                    idOrder: key,
-                    ...oderData[key],
-                }));
+                dataKey.push(oderDataKey);
 
-                setOderProducts(products);
-                console.log(products);
-            } else {
-                setOderProducts([]);
-            }
+                console.log("lenght  " + dataKey.length);
+            });
+        });
+
+
+        dataKey.forEach(element => {
+            const oderRefKey = ref(database, `Order/${userId}/${element}`);
+
+            onValue(oderRefKey, (snapshot) => {
+                const data = snapshot.val();
+
+                if (data) {
+                    const products = Object.keys(data).map((key) => ({
+                        idOrder: key,
+                        ...data[key],
+                    }));
+
+                    setOderProducts(products);
+                } else {
+                    setOderProducts([]);
+                }
+            })
         });
         return () => {
-            off(cartRef);
+            off(oderRef);
         };
     }
     return (
@@ -47,31 +59,33 @@ const Oder = ({ route }) => {
             <Text style={styles.title} >ĐƠN MUA</Text>
             <View style={{ width: '100%', backgroundColor: 'black', height: 1 }} />
             <View style={{ margin: 15 }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số lượng: 1 MẶT HÀNG</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số lượng: 1 ĐƠN HÀNG</Text>
             </View>
             <ScrollView style={{ padding: 16 }}>
-                {oderProducts.map((product) => (
-                    <View key={product.idOrder} style={styles.productContainer}>
-                        <View style={styles.productBox}>
-                            <Image source={{ uri: product.search_image }} style={styles.productImage} />
-                            <View style={styles.productInfo}>
-                                <Text style={styles.productName}>{product.brands_filter_facet}</Text>
-                                <Text style={styles.productPrice}>{product.price} VNĐ</Text>
-                                <View style={styles.buttonContainer}>
-                                    <TouchableOpacity style={styles.button1} onPress={() => handleBuyNow(product)}>
-                                        <Ionicons name="cart-outline" size={24} color="#ff6" />
-                                        <Text style={styles.buttonText1}>Đánh giá</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.button} onPress={() => handleRemoveProduct(product.idOrder)}>
-                                        <Ionicons name="trash-outline" size={24} color="#fff" />
-                                        <Text style={styles.buttonText}>Xóa</Text>
-                                    </TouchableOpacity>
+                {
+                    oderProducts.map((product) => (
+                        <View key={product.idOrder} style={styles.productContainer}>
+                            <View style={styles.productBox}>
+                                <Image source={{ uri: product.search_image }} style={styles.productImage} />
+                                <View style={styles.productInfo}>
+                                    <Text style={styles.productName}>{product.brands_filter_facet}</Text>
+                                    <Text style={styles.productPrice}>{product.price} VNĐ</Text>
+                                    <View style={styles.buttonContainer}>
+                                        <TouchableOpacity style={styles.button1} onPress={() => handleBuyNow(product)}>
+                                            <Ionicons name="cart-outline" size={24} color="#ff6" />
+                                            <Text style={styles.buttonText1}>Đánh giá</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.button} onPress={() => handleRemoveProduct(product.idOrder)}>
+                                            <Ionicons name="trash-outline" size={24} color="#fff" />
+                                            <Text style={styles.buttonText}>Xóa</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
 
-                    </View>
-                ))}
+                        </View>
+                    ))
+                }
             </ScrollView>
         </View>
     );

@@ -44,11 +44,10 @@ function Cart({ route, navigation }) {
         };
     }
 
-    const handleBuyNowAll = () => {
+    const handleBuyNow = () => {
         const userId = auth.currentUser.uid;
 
         const orderRef = ref(database, `Order/${userId}`);
-
         push(orderRef, cartProducts)
             .then((newRef) => {
                 const orderItemId = newRef.key;
@@ -62,25 +61,6 @@ function Cart({ route, navigation }) {
             });
         console.log('Đang mua sản phẩm:', cartProducts);
     }
-
-    const handleBuyNow = (product) => {
-        const userId = auth.currentUser.uid;
-
-        const orderRef = ref(database, `Order/${userId}`);
-
-        push(orderRef, product)
-            .then((newRef) => {
-                const orderItemId = newRef.key;
-                console.log('người dùng với id:', userId);
-                console.log('Đã thêm sản phẩm vào giỏ hàng:', product);
-                console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
-                navigation.navigate('Oder', { userId: userId });
-            })
-            .catch((error) => {
-                console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
-            });
-        console.log('Đang mua sản phẩm:', product);
-    };
 
     const handleRemoveProduct = (productId) => {
         const userId = auth.currentUser.uid;
@@ -147,10 +127,6 @@ function Cart({ route, navigation }) {
                                     Nhấn vào để chỉnh sửa
                                 </Animated.Text>
                                 <View style={styles.buttonContainer}>
-                                    <TouchableOpacity style={styles.button1} onPress={() => handleBuyNow(product)}>
-                                        <Ionicons name="cart-outline" size={24} color="#ff6" />
-                                        <Text style={styles.buttonText1}>Mua</Text>
-                                    </TouchableOpacity>
                                     <TouchableOpacity style={styles.button} onPress={() => handleRemoveProduct(product.id)}>
                                         <Ionicons name="trash-outline" size={24} color="#fff" />
                                         <Text style={styles.buttonText}>Xóa</Text>
@@ -168,7 +144,7 @@ function Cart({ route, navigation }) {
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red', marginRight: 15 }}>{Sum()} VNĐ</Text>
             </View>
 
-            <TouchableOpacity style={{ backgroundColor: 'black', margin: 7, padding: 15 }} onPress={() => handleBuyNowAll()}>
+            <TouchableOpacity style={{ backgroundColor: 'black', margin: 7, padding: 15 }} onPress={() => handleBuyNow()}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
                         THANH TOÁN

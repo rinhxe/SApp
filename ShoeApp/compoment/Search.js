@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, FlatList, Text, StyleSheet, Image } from 'react-native';
 
 const Search = () => {
   const [searchText, setSearchText] = useState('');
   const [products, setProducts] = useState([]);
 
+  useEffect(() => {
+    fetch('https://hungnttg.github.io/shopgiay.json')
+      .then((response) => response.json())
+      .then((data) => setProducts(data.products))
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   const searchProducts = async () => {
 
@@ -12,7 +20,7 @@ const Search = () => {
       const response = await fetch('https://hungnttg.github.io/shopgiay.json');
       const data = await response.json();
       if (data && data.products) {
-        const filteredProducts = data.products.filter((product) => product.product_additional_info === searchText);
+        const filteredProducts = data.products.filter((product) => product.product_additional_info.toLowerCase().indexOf(searchText.toLowerCase()) !== -1);
         setProducts(filteredProducts);
       } else {
         console.error('Invalid data format or missing "products" property');
@@ -27,7 +35,7 @@ const Search = () => {
     <View style={styles.productFrame}>
       <Image source={{ uri: item.search_image }} style={styles.productImage} />
       <Text style={styles.productAdditionalInfo}>{item.product_additional_info}</Text>
-      
+
     </View>
   );
 
