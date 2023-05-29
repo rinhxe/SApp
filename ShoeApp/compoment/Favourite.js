@@ -104,7 +104,8 @@ export default function Favourite({ navigation }) {
     push(ref(database, `Cart/${userId}`), {
       search_image: product.search_image,
       price: product.price,
-      brands_filter_facet: product.brands_filter_facet
+      brands_filter_facet: product.brands_filter_facet,
+      quantity: product.quantity
     })
       .then((newRef) => {
         const cartItemId = newRef.key;

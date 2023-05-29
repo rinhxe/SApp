@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native';
-import { getAuth } from 'firebase/auth';
+import { getAuth, signOut } from 'firebase/auth';
 import { getDatabase, off, onValue, ref } from 'firebase/database';
 import firebase from '../config/FirebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -29,7 +29,16 @@ function User({ navigation }) {
     }, []);
 
     const handleLogout = () => {
-        navigation.navigate('Login');
+        const auth = getAuth();
+        signOut(auth)
+            .then(() => {
+                console.log('Đăng xuất thành công');
+                navigation.navigate('Login');
+            })
+            .catch((error) => {
+                console.log('Lỗi khi đăng xuất:', error);
+            });
+
 
     };
     const openFacebookPage = () => {
@@ -85,16 +94,15 @@ function User({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.section}
-                    onPress={() => navigation.navigate('ChangePassword', { password: userData.pass,userId: auth.currentUser.uid})}
 
-                    onPress={() => navigation.navigate('Oder', { userId: auth.currentUser.uid})}
+                    onPress={() => navigation.navigate('Oder', { userId: auth.currentUser.uid })}
                 >
                     <Icon name="shopping-cart" size={20} color="cyan" />
                     <Text style={styles.sectionText}>Đơn mua</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.section}
-                    onPress={() => navigation.navigate('ChangePassword', { password: userData.pass,userId: auth.currentUser.uid})}
+                    onPress={() => navigation.navigate('ChangePassword', { password: userData.pass, userId: auth.currentUser.uid })}
                 >
                     <Icon name="lock" size={20} color="blue" />
                     <Text style={styles.sectionText}>Đổi mật khẩu</Text>

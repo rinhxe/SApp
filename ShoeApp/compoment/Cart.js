@@ -40,18 +40,14 @@ function Cart({ route, navigation }) {
         };
     };
 
-    const handleToggleSwitch = (product) => {
-        const updatedProducts = cartProducts.map((item) => {
-            if (item.id === product.id) {
-                return {
-                    ...item,
-                    selected: !item.selected,
-                };
-            }
-            return item;
-        });
+    const handleToggleSwitch = (productId) => {
+        const item = cartProducts.find((item) => item.id === productId);
 
-        setCartProducts(updatedProducts);
+        if (item) {
+            // Cập nhật trạng thái của sản phẩm
+            item.selected = !item.selected;
+            setCartProducts([...cartProducts]);
+        }
     };
 
     const handleBuyNowAll = () => {
@@ -59,17 +55,26 @@ function Cart({ route, navigation }) {
         const orderRef = ref(database, `Order/${userId}`);
         const selectedProducts = cartProducts.filter((product) => product.selected);
 
-        push(orderRef, selectedProducts)
-            .then((newRef) => {
-                const orderItemId = newRef.key;
-                console.log('Người dùng với id:', userId);
-                console.log('Đã thêm sản phẩm vào giỏ hàng:', selectedProducts);
-                console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
-                navigation.navigate('Oder', { userId: userId });
-            })
-            .catch((error) => {
-                console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
-            });
+        cartProducts.forEach((item) => {
+            if (item.selected) {
+                //Xóa sản phẩm đã chọn thanh toán
+                handleRemoveProduct(item.id);
+            }
+            //Thêm sản phẩm vào bảng order
+            push(orderRef, selectedProducts)
+                .then((newRef) => {
+                    const orderItemId = newRef.key;
+                    console.log('Người dùng với id:', userId);
+                    console.log('Đã thêm sản phẩm vào giỏ hàng:', selectedProducts);
+                    console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
+                    navigation.navigate('Oder', { userId: userId });
+                })
+                .catch((error) => {
+                    console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
+                });
+        })
+
+
     };
 
     const handleRemoveProduct = (productId) => {
@@ -139,7 +144,7 @@ function Cart({ route, navigation }) {
                             <View style={styles.productInfo}>
                                 <Text style={styles.productName}>{product.brands_filter_facet}</Text>
                                 <Text style={styles.productquantity}>Số lượng: {product.quantity}</Text>
-                                <Text style={styles.productPrice}>{sumProductsPrice(product)} VNĐ</Text>
+                                <Text style={styles.productPrice}>Giá: {sumProductsPrice(product)} VNĐ</Text>
                                 <Animated.Text
                                     style={[styles.editText, { opacity: fadeAnim }]}
                                     onLayout={startAnimation}
@@ -160,7 +165,7 @@ function Cart({ route, navigation }) {
                             <Switch
                                 style={styles.button1}
                                 value={product.selected}
-                                onValueChange={() => handleToggleSwitch(product)}
+                                onValueChange={() => handleToggleSwitch(product.id)}
                             />
                         </View>
                     </View>
@@ -222,13 +227,14 @@ const styles = StyleSheet.create({
         marginLeft: 16,
     },
     productName: {
+        fontWeight: 'bold',
         fontSize: 18,
         marginBottom: 8,
         marginTop: 30,
     },
-    productquantity:{
-        fontSize:15,
-        marginBottom:5,
+    productquantity: {
+        fontSize: 15,
+        marginBottom: 5,
         // color:'blue'
     },
     productPrice: {

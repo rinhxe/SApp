@@ -46,16 +46,18 @@ function ProductDetail({ route, navigation }) {
     const addToFavo = () => {
         // Xử lý thêm sản phẩm vào giỏ hàng
         const auth = getAuth(firebase);
+        
         // const userId = auth.currentUser.uid;
         const userId = auth.currentUser ? auth.currentUser.uid : null;
         if (userId) {
         const database = getDatabase(firebase);
+        const productWithQuantity = { ...product, quantity };
 console.log(product);
-        push(ref(database, `Favourite/${userId}`), product)
+        push(ref(database, `Favourite/${userId}`), productWithQuantity)
             .then((newRef) => {
                 const cartItemId = newRef.key;
                 console.log('người dùng với id:', userId);
-                console.log('Đã thêm sản phẩm vào yêu thích:', product);
+                console.log('Đã thêm sản phẩm vào yêu thích:', productWithQuantity);
                 console.log('ID của sản phẩm trong yêu thích:', cartItemId);
             })
             .catch((error) => {
@@ -73,7 +75,7 @@ console.log(product);
         <View style={styles.container}>
             <Image source={{ uri: product.search_image }} style={styles.productImage} />
             <Text style={styles.productName}>{product.brands_filter_facet}</Text>
-            <Text style={styles.productPrice}>{product.price}</Text>
+            <Text style={styles.productPrice}>{product.price} VNĐ</Text>
             <Text style={styles.productAdditionalInfo}>{product.product_additional_info}</Text>
 
             <View style={styles.quantityContainer}>

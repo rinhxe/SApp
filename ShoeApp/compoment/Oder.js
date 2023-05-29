@@ -1,61 +1,84 @@
 import React, { Children, useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { getDatabase, ref, onValue, off, remove, push, set, child } from 'firebase/database';
+import { getDatabase, ref, onValue, off, remove, push, set, child, orderByKey } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import firebase from '../config/FirebaseConfig';
 
 const Oder = ({ route }) => {
-    const [oderProducts, setOderProducts] = useState([]);
+    const [oderProductsList, setOderProductsList] = useState([]);
     const auth = getAuth(firebase);
     const database = getDatabase(firebase);
     const { userId } = route.params;
-    const dataKey = [];
     useEffect(() => {
 
-        fetchData();
-
+        fetchDataList();
     }, []);
 
-    const fetchData = () => {
+    const countSelectedProducts = () => {
+        return oderProductsList.length;
+    };
+
+    //List Sản phẩm trong hóa đơn
+    const fetchDataList = () => {
         const oderRef = ref(database, `Order/${userId}`);
-
         onValue(oderRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const dataArray = [];
+                Object.keys(data).forEach((key) => {
+                    // Lấy dữ liệu từng nhánh con
+                    const childData = data[key];
 
-            snapshot.forEach((childSnapshot) => {
-                const oderDataKey = childSnapshot.key;
+                    const variableArray = [];
 
-                dataKey.push(oderDataKey);
+                    Object.keys(childData).forEach((variableKey) => {
+                        const variableValue = childData[variableKey];
 
-                console.log("lenght  " + dataKey.length);
-            });
-        });
+                        variableArray.push({ key: variableKey, value: variableValue });
+                    });
+                    // Thêm dữ liệu vào mảng
+                    dataArray.push({ key, variables: variableArray });
+                });
 
+                setOderProductsList(dataArray);
 
-        dataKey.forEach(element => {
-            const oderRefKey = ref(database, `Order/${userId}/${element}`);
-
-            onValue(oderRefKey, (snapshot) => {
-                const data = snapshot.val();
-
-                if (data) {
-                    const products = Object.keys(data).map((key) => ({
-                        idOrder: key,
-                        ...data[key],
-                    }));
-
-                    setOderProducts(products);
-                } else {
-                    setOderProducts([]);
-                }
-            })
+            } else {
+                console.log('Không có dữ liệu');
+                
+            }
         });
         return () => {
             off(oderRef);
         };
     }
-    const countSelectedProducts = () => {
-        return oderProducts.length;
+    const sumSelectedProductsPrice = (key) => {
+        let sum = 0;
+
+        oderProductsList.forEach((product) => {
+            if (key === product.key) {
+                product.variables.map((item) => {
+                    sum += item.value.price * item.value.quantity;
+
+                })
+            }
+        });
+        return sum;
+    };
+
+    const handleRemoveProduct = (productId) => {
+        const userId = auth.currentUser.uid;
+        const cartRef = ref(database, `Order/${userId}/${productId}`);
+
+        remove(cartRef)
+            .then(() => {
+                console.log('Đã xóa sản phẩm thành công');
+                setOderProductsList((prevItems) => prevItems.filter((item) => item.key !== productId));
+                alert('Đã xóa thành công đơn mua !');
+            })
+            .catch((error) => {
+                console.error('Lỗi xóa sản phẩm:', error);
+            });
     };
     return (
         <View style={styles.container}>
@@ -66,26 +89,42 @@ const Oder = ({ route }) => {
             </View>
             <ScrollView style={{ padding: 16 }}>
                 {
-                    oderProducts.map((product) => (
-                        <View key={product.idOrder} style={styles.productContainer}>
+                    oderProductsList.map((product, index) => (
+                        <View key={product.key} style={styles.productContainer}>
                             <View style={styles.productBox}>
-                                <Image source={{ uri: product.search_image }} style={styles.productImage} />
-                                <View style={styles.productInfo}>
-                                    <Text style={styles.productName}>{product.brands_filter_facet}</Text>
-                                    <Text style={styles.productPrice}>{product.price} VNĐ</Text>
-                                    <View style={styles.buttonContainer}>
-                                        <TouchableOpacity style={styles.button1} onPress={() => handleBuyNow(product)}>
-                                            <Ionicons name="cart-outline" size={24} color="#ff6" />
-                                            <Text style={styles.buttonText1}>Đánh giá</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.button} onPress={() => handleRemoveProduct(product.idOrder)}>
-                                            <Ionicons name="trash-outline" size={24} color="#fff" />
-                                            <Text style={styles.buttonText}>Xóa</Text>
-                                        </TouchableOpacity>
+                                <Text style={styles.productName}>Hóa đơn thứ: {index + 1}</Text>
+                                {product.variables.map((variable) => (
+                                    <View key={variable.key} style={styles.productItemContainer}>
+
+                                        <View style={styles.productBox1}>
+
+                                            <Image source={{ uri: variable.value.search_image }} style={styles.productImage} />
+                                            <View style={styles.productInfo}>
+
+                                                <Text style={styles.productName}>{variable.value.brands_filter_facet}</Text>
+                                                <Text style={styles.productquantity}>Số lượng: {variable.value.quantity}</Text>
+                                                <Text style={styles.productPrice}>{variable.value.price * variable.value.quantity} VNĐ</Text>
+                                            </View>
+                                        </View>
                                     </View>
+                                ))}
+                                <View style={{ marginBottom: 8, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 15 }}>Tổng:</Text>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red', marginRight: 15 }}>
+                                        {sumSelectedProductsPrice(product.key)} VNĐ
+                                    </Text>
+                                </View>
+                                <View style={styles.buttonContainer}>
+                                    <TouchableOpacity style={styles.button1} onPress={() => handleBuyNow(product)}>
+                                        <Ionicons name="cart-outline" size={24} color="#ff6" />
+                                        <Text style={styles.buttonText1}>Đánh giá</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.button} onPress={() => handleRemoveProduct(product.key)}>
+                                        <Ionicons name="trash-outline" size={24} color="#fff" />
+                                        <Text style={styles.buttonText}>Xóa</Text>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
-
                         </View>
                     ))
                 }
@@ -106,11 +145,26 @@ const styles = StyleSheet.create({
         marginBottom: 7
 
     },
+
     productContainer: {
         alignItems: 'center',
         marginBottom: 16,
     },
+    productItemContainer: {
+        flexDirection: 'row',
+
+    },
     productBox: {
+        borderWidth: 3,
+        borderColor: '#000000',
+        backgroundColor: '#b2a5a5',
+        borderRadius: 8,
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: 8,
+        width: '100%',
+    },
+    productBox1: {
         borderWidth: 3,
         borderColor: '#000000',
         backgroundColor: '#b2a5a5',
@@ -118,6 +172,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 8,
+        margin: 8,
+        width: '95%',
     },
     productImage: {
         width: 100,
@@ -130,9 +186,15 @@ const styles = StyleSheet.create({
         marginLeft: 16,
     },
     productName: {
+        fontWeight: 'bold',
         fontSize: 18,
         marginBottom: 8,
-        marginTop: 30,
+        marginTop: 8,
+    },
+    productquantity: {
+        fontSize: 15,
+        marginBottom: 5,
+        // color:'blue'
     },
     productPrice: {
         fontSize: 16,
