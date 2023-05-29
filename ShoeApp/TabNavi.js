@@ -7,6 +7,7 @@ import Search from "./compoment/Search";
 import User from "./compoment/User";
 import NotLoginUser from "./compoment/NotLoginUser";
 import NoFavourite from "./compoment/NoFavourite";
+import NoCart from "./compoment/NoCart";
 const Tab = createBottomTabNavigator();
 
 const TabNavi = ({ route }) => {
@@ -63,8 +64,8 @@ const TabNavi = ({ route }) => {
                 />
             ) : (
                 <Tab.Screen
-                    name="NotLoginUserCart"
-                    component={NotLoginUser}
+                    name="NoCart"
+                    component={NoCart}
                     options={{
                         tabBarLabel: 'Cart',
                         tabBarIcon: ({ color, size }) => <Ionicons name='cart' color={color} size={size} />
