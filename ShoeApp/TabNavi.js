@@ -6,6 +6,7 @@ import Cart from "./compoment/Cart";
 import Search from "./compoment/Search";
 import User from "./compoment/User";
 import NotLoginUser from "./compoment/NotLoginUser";
+import NoFavourite from "./compoment/NoFavourite";
 const Tab = createBottomTabNavigator();
 
 const TabNavi = ({ route }) => {
@@ -43,8 +44,8 @@ const TabNavi = ({ route }) => {
 
             ) : (
                 <Tab.Screen
-                    name="NotLoginUserFav"
-                    component={NotLoginUser}
+                    name="NoFavourite"
+                    component={NoFavourite}
                     options={{
                         tabBarLabel: 'Favourite',
                         tabBarIcon: ({ color, size }) => <Ionicons name='heart' color={color} size={size} />
