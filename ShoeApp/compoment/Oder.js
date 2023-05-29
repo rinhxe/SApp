@@ -62,11 +62,7 @@ const Oder = ({ route }) => {
             <Text style={styles.title} >ĐƠN MUA</Text>
             <View style={{ width: '100%', backgroundColor: 'black', height: 1 }} />
             <View style={{ margin: 15 }}>
-<<<<<<< HEAD
                 <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số Hóa đơn: {countSelectedProducts()}</Text>
-=======
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số lượng: 1 ĐƠN HÀNG</Text>
->>>>>>> a951e71a28324ad05259e3afaabd3dc2f6cd53ae
             </View>
             <ScrollView style={{ padding: 16 }}>
                 {
