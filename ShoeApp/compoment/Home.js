@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import Swiper from 'react-native-swiper'
 
 function Home({ navigation }) {
     const [products, setProducts] = useState([]);
+    const swiperRef = useRef(null);
 
     useEffect(() => {
         fetch('https://hungnttg.github.io/shopgiay.json')
@@ -20,20 +22,37 @@ function Home({ navigation }) {
 
     return (
         <View style={styles.container}>
-            {/*<View style={styles.header}>*/}
-            {/*    <TouchableOpacity style={styles.userIconContainer} onPress={() => navigation.navigate('User')}>*/}
-            {/*        <FontAwesome name="user" size={29} color="black" />*/}
-            {/*    </TouchableOpacity>*/}
-            {/*    <TouchableOpacity style={styles.cartIconContainer} onPress={() => navigation.navigate('Cart')}>*/}
-            {/*        <FontAwesome name="shopping-cart" size={29} color="black" />*/}
-            {/*        <View style={styles.cartCount}>*/}
-            {/*            <Text style={styles.cartCountText}>3</Text>*/}
-            {/*        </View>*/}
-            {/*    </TouchableOpacity>*/}
-            {/*</View>*/}
-            
-            <View style={styles.separator}></View>
-            <ScrollView contentContainerStyle={styles.contentContainer}>
+            <Text style={styles.title}>Danh Mục Sản Phẩm</Text>
+            <View style={styles.slide}>
+                <Swiper
+                    ref={swiperRef}
+                    autoplay={false} // Tắt chế độ autoplay của Swiper
+                    showsPagination={true}
+                    dotStyle={styles.paginationDot}//hien thi dau cham de dem so anh
+                    activeDotStyle={styles.paginationActiveDot}//hien thi dau cham khi anh den
+                >
+                    <View style={styles.slide_img}>
+                        <Image source={require('../image/logo.png')} style={styles.imageBackground} />
+                        <View style={styles.button_slide}>
+                            <Text style={styles.text_slide}>Buy Now</Text>
+                        </View>
+                    </View>
+                    <View style={styles.slide_img}>
+                        <Image source={require('../image/logo1.png')} style={styles.imageBackground} />
+                        <View style={styles.button_slide}>
+                            <Text style={styles.text_slide}>Buy Now</Text>
+                        </View>
+                    </View>
+                    <View style={styles.slide_img}>
+                        <Image source={require('../image/logo2.png')} style={styles.imageBackground} />
+                        <View style={styles.button_slide}>
+                            <Text style={styles.text_slide}>Buy Now</Text>
+                        </View>
+                    </View>
+                </Swiper>
+            </View>
+            <Text style={styles.title1}>Sản Phẩm Thịnh Hành</Text>
+            <ScrollView contentContainerStyle={styles.contentContainer} horizontal={true} showsHorizontalScrollIndicator={false}>
                 {products.map((product) => (
                     <TouchableOpacity key={product.styleid} style={styles.productItem} onPress={() => handleProductPress(product)}>
                         <View style={styles.productFrame}>
@@ -45,6 +64,7 @@ function Home({ navigation }) {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
+            
         </View>
     );
 }
@@ -54,80 +74,103 @@ export default Home;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingTop: 16,
+        backgroundColor: '#DDD',
     },
     userIconContainer: {},
     cartIconContainer: {
         marginBottom: 10,
         position: 'relative',
     },
-    cartCount: {
-        position: 'absolute',
-        top: -8,
-        right: -8,
-        backgroundColor: 'red',
-        borderRadius: 10,
-        width: 20,
-        height: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    cartCountText: {
-        color: 'white',
-        fontSize: 12,
-        fontWeight: 'bold',
-    },
-    separator: {
-        height: 1,
-        backgroundColor: '#e81d1d',
-        marginHorizontal: 16,
-    },
     contentContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-evenly',
-        padding: 16,
-        marginTop: 30,
-    },
-    productItem: {
-        width: '48%',
-        height: 300,
-        marginBottom: 16,
-        alignItems: 'center',
+        height:400,
+        marginTop: 30
     },
     productFrame: {
-        borderWidth: 1,
-        borderColor: '#888',
-        borderRadius: 8,
-        padding: 16,
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
+        width: 250,
+        height: 400,
+        marginHorizontal: 10,
+        borderRadius: 16,
+        backgroundColor: 'white',
+        alignItems:'center'
     },
     productImage: {
-        width: 100,
-        height: 100,
-        resizeMode: 'cover',
-        borderRadius: 8,
+        width: '90%',
+        height: 200,
+        borderRadius: 16,
+        marginHorizontal: '5%',
+        marginTop: '5%'
     },
     productName: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: 'bold',
-        marginTop: 8,
+        marginTop: 18,
+        
     },
     productPrice: {
-        fontSize: 14,
+        fontSize: 18,
         color: '#888',
+        marginTop: 10,
+        
     },
     productAdditionalInfo: {
-        fontSize: 12,
+        fontSize: 14,
         color: '#888',
-        marginTop: 4,
+        marginTop: 10,
+        
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginTop: 10,
+        marginLeft: 20
+    },
+    title1: {
+        fontSize: 23,
+        fontWeight: 'bold',
+        marginLeft: 20
+    },
+    slide: {
+        height: 200,
+        width: '90%',
+        marginHorizontal: '5%',
+        backgroundColor: 'white',
+        borderRadius: 30,
+        marginVertical: 20
+    },
+    imageBackground: {
+        height: 150,
+        width: '60%',
+        marginLeft: 10,
+        marginTop: 10,
+        borderRadius: 30
+    },
+    slide_img: {
+        flexDirection: 'row',
+        paddingBottom: 10
+    },
+    button_slide: {
+        height: 50,
+        width: 120,
+        backgroundColor: 'black',
+        borderRadius: 15,
+        marginHorizontal: 10, 
+        marginTop: 50
+    },
+    text_slide: {
+        color: 'white',
+        fontSize: 20,
+        textAlign: 'center',
+        marginTop: 10,
+        fontWeight:'bold'
+    },
+    paginationDot:{
+        marginVertical: 10
+    },
+    paginationActiveDot: {
+        backgroundColor: '#038C7F',
+        width: 16,
+        height: 8,
+        borderRadius: 4,
+        marginTop: 10
     },
 });

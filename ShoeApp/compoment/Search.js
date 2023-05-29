@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, FlatList, Text, StyleSheet, Image } from 'react-native';
+import { View, TextInput, Button, FlatList, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const Search = () => {
   const [searchText, setSearchText] = useState('');
@@ -34,21 +34,29 @@ const Search = () => {
   const renderItem = ({ item }) => (
     <View style={styles.productFrame}>
       <Image source={{ uri: item.search_image }} style={styles.productImage} />
-      <Text style={styles.productAdditionalInfo}>{item.product_additional_info}</Text>
-
+      <View style={{ flexDirection: 'column' }}>
+        <Text style={styles.productAdditionalInfo}>{item.product_additional_info}</Text>
+        <Text style={styles.price}>Price: {item.price}</Text>
+      </View>
     </View>
   );
 
   return (
     <View>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Search"
-        value={searchText}
-        onChangeText={setSearchText}
-      />
-      <Button title="Search" onPress={searchProducts} style={styles.button} />
-      {products.length < 1 && <Text>ko có sp nào</Text>}
+      <View style={{ flexDirection: 'row' }}>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Search"
+          value={searchText}
+          onChangeText={setSearchText}
+        />
+        <View style={styles.search}>
+          <TouchableOpacity onPress={searchProducts}>
+            <Image source={require('../image/search.png')} />
+          </TouchableOpacity>
+        </View>
+      </View>
+      {products.length < 1 && <Text style={{fontSize: 20, textAlign: 'center', }}>ko có sp nào</Text>}
       <FlatList
         data={products}
         renderItem={renderItem}
@@ -59,29 +67,54 @@ const Search = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
   textInput: {
-    marginTop: 30
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 16,
+    paddingHorizontal: 8,
+    marginBottom: 16,
+    width: 320,
+    marginLeft: 10,
+    marginTop: 10
   },
   productFrame: {
-    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    marginLeft: 10
   },
   productImage: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
+    marginRight: 16,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: 'gray'
   },
   productName: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 8,
   },
-  productPrice: {
+  productAdditionalInfo: {
     fontSize: 14,
     color: 'gray',
   },
-  productAdditionalInfo: {
-    fontSize: 12,
-    color: 'gray',
+  price:{
+    fontSize: 14,
+    color: 'black',
   },
-
+  search: {
+    height: 40,
+    width: 40,
+    marginLeft: 30,
+    marginTop: 20
+  }
 });
 
 export default Search;
