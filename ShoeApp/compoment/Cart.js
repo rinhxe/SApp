@@ -54,12 +54,16 @@ function Cart({ route, navigation }) {
         setCartProducts(updatedProducts);
     };
 
-    const handleBuyNowAll = () => {
+    const handleBuyNow = () => {
         const userId = auth.currentUser.uid;
         const orderRef = ref(database, `Order/${userId}`);
+<<<<<<< HEAD
         const selectedProducts = cartProducts.filter((product) => product.selected);
 
         push(orderRef, selectedProducts)
+=======
+        push(orderRef, cartProducts)
+>>>>>>> a951e71a28324ad05259e3afaabd3dc2f6cd53ae
             .then((newRef) => {
                 const orderItemId = newRef.key;
                 console.log('Người dùng với id:', userId);
@@ -70,7 +74,12 @@ function Cart({ route, navigation }) {
             .catch((error) => {
                 console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
             });
+<<<<<<< HEAD
     };
+=======
+        console.log('Đang mua sản phẩm:', cartProducts);
+    }
+>>>>>>> a951e71a28324ad05259e3afaabd3dc2f6cd53ae
 
     const handleRemoveProduct = (productId) => {
         const userId = auth.currentUser.uid;
@@ -142,10 +151,13 @@ function Cart({ route, navigation }) {
                                     Nhấn vào để chỉnh sửa
                                 </Animated.Text>
                                 <View style={styles.buttonContainer}>
+<<<<<<< HEAD
                                     {/*<TouchableOpacity style={styles.button1} onPress={() => handleBuyNow(product)}>*/}
                                     {/*    <Ionicons name="cart-outline" size={24} color="#ff6" />*/}
                                     {/*    <Text style={styles.buttonText1}>Mua</Text>*/}
                                     {/*</TouchableOpacity>*/}
+=======
+>>>>>>> a951e71a28324ad05259e3afaabd3dc2f6cd53ae
                                     <TouchableOpacity style={styles.button} onPress={() => handleRemoveProduct(product.id)}>
                                         <Ionicons name="trash-outline" size={24} color="#fff" />
                                         <Text style={styles.buttonText}>Xóa</Text>
@@ -169,7 +181,11 @@ function Cart({ route, navigation }) {
                 </Text>
             </View>
 
+<<<<<<< HEAD
             <TouchableOpacity style={{ backgroundColor: 'black', margin: 7, padding: 15 }} onPress={handleBuyNowAll}>
+=======
+            <TouchableOpacity style={{ backgroundColor: 'black', margin: 7, padding: 15 }} onPress={() => handleBuyNow()}>
+>>>>>>> a951e71a28324ad05259e3afaabd3dc2f6cd53ae
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
                         THANH TOÁN
