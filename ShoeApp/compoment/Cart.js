@@ -105,10 +105,14 @@ function Cart({ route, navigation }) {
     const sumSelectedProductsPrice = () => {
         let sum = 0;
         selectedProducts.forEach((product) => {
-            sum += product.price;
+            sum += product.price * product.quantity;
         });
         return sum;
     };
+    const sumProductsPrice = (product) => {
+        return product.price * product.quantity;
+    };
+
 
     const countSelectedProducts = () => {
         return cartProducts.length;
@@ -134,7 +138,8 @@ function Cart({ route, navigation }) {
                             <Image source={{ uri: product.search_image }} style={styles.productImage} />
                             <View style={styles.productInfo}>
                                 <Text style={styles.productName}>{product.brands_filter_facet}</Text>
-                                <Text style={styles.productPrice}>{product.price} VNĐ</Text>
+                                <Text style={styles.productquantity}>Số lượng: {product.quantity}</Text>
+                                <Text style={styles.productPrice}>{sumProductsPrice(product)} VNĐ</Text>
                                 <Animated.Text
                                     style={[styles.editText, { opacity: fadeAnim }]}
                                     onLayout={startAnimation}
@@ -220,6 +225,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginBottom: 8,
         marginTop: 30,
+    },
+    productquantity:{
+        fontSize:15,
+        marginBottom:5,
+        // color:'blue'
     },
     productPrice: {
         fontSize: 16,
