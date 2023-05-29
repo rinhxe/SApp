@@ -46,23 +46,23 @@ function ProductDetail({ route, navigation }) {
     const addToFavo = () => {
         // Xử lý thêm sản phẩm vào giỏ hàng
         const auth = getAuth(firebase);
-        
+
         // const userId = auth.currentUser.uid;
         const userId = auth.currentUser ? auth.currentUser.uid : null;
         if (userId) {
-        const database = getDatabase(firebase);
-        const productWithQuantity = { ...product, quantity };
-console.log(product);
-        push(ref(database, `Favourite/${userId}`), productWithQuantity)
-            .then((newRef) => {
-                const cartItemId = newRef.key;
-                console.log('người dùng với id:', userId);
-                console.log('Đã thêm sản phẩm vào yêu thích:', productWithQuantity);
-                console.log('ID của sản phẩm trong yêu thích:', cartItemId);
-            })
-            .catch((error) => {
-                console.error('Lỗi thêm sản phẩm vào yêu thích:', error);
-            });
+            const database = getDatabase(firebase);
+            const productWithQuantity = { ...product, quantity };
+            console.log(product);
+            push(ref(database, `Favourite/${userId}`), productWithQuantity)
+                .then((newRef) => {
+                    const cartItemId = newRef.key;
+                    console.log('người dùng với id:', userId);
+                    console.log('Đã thêm sản phẩm vào yêu thích:', productWithQuantity);
+                    console.log('ID của sản phẩm trong yêu thích:', cartItemId);
+                })
+                .catch((error) => {
+                    console.error('Lỗi thêm sản phẩm vào yêu thích:', error);
+                });
         } else {
 
             console.log('Người dùng chưa đăng nhập');
@@ -74,8 +74,13 @@ console.log(product);
     return (
         <View style={styles.container}>
             <Image source={{ uri: product.search_image }} style={styles.productImage} />
-            <Text style={styles.productName}>{product.brands_filter_facet}</Text>
-            <Text style={styles.productPrice}>{product.price} VNĐ</Text>
+            <TouchableOpacity style={{ position: 'absolute', marginTop: 16, marginLeft: 350 }} onPress={addToFavo}>
+                <Image source={require('../image/fa.png')} style={{ height: 40, width: 40, }} />
+            </TouchableOpacity>
+            <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.productName}>{product.brands_filter_facet}</Text>
+                <Text style={styles.productPrice}>{product.price}</Text>
+            </View>
             <Text style={styles.productAdditionalInfo}>{product.product_additional_info}</Text>
 
             <View style={styles.quantityContainer}>
@@ -91,9 +96,9 @@ console.log(product);
             <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
                 <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.addToCartButton} onPress={addToFavo}>
-                                 <Text style={styles.addToCartButtonText}>Thêm vào yêu thích</Text>
-             </TouchableOpacity>
+            <TouchableOpacity style={styles.addToCartButton} >
+                <Text style={styles.addToCartButtonText}>Mua Ngay</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -101,38 +106,40 @@ console.log(product);
 export default ProductDetail;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+    // container: {
+    //     flex: 1,
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    // },
     productImage: {
-        width: 200,
-        height: 200,
-        resizeMode: 'cover',
-        borderRadius: 8,
+        width: 420,
+        height: 300,
     },
     productName: {
         fontSize: 24,
         fontWeight: 'bold',
         marginTop: 16,
+        marginLeft: 16
     },
     productPrice: {
         fontSize: 18,
-        color: '#888',
-        marginTop: 8,
+        color: '#990000',
+        marginTop: 20,
+        marginLeft: 40
     },
     productAdditionalInfo: {
         fontSize: 14,
         marginTop: 8,
+        marginLeft: 16
     },
     quantityContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 16,
+        marginLeft: 10
     },
     quantityButton: {
-        backgroundColor: '#e81d1d',
+        backgroundColor: '#666',
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 8,
@@ -148,11 +155,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     addToCartButton: {
-        backgroundColor: '#e81d1d',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 8,
-        marginTop: 16,
+        backgroundColor: '#666',
+        paddingHorizontal: 20,
+        paddingVertical: 18,
+        borderRadius: 20,
+        marginTop: 26,
+        marginHorizontal: 16,
     },
     addToCartButtonText: {
         color: 'white',

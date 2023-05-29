@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginBottom: 16,
     width: 320,
-    marginLeft: 10,
-    marginTop: 10
+    marginLeft: 16,
+    marginTop: 35
   },
   productFrame: {
     flexDirection: 'row',
@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
   search: {
     height: 40,
     width: 40,
-    marginLeft: 30,
-    marginTop: 20
+    marginLeft: 20,
+    marginTop: 42
   }
 });
 
