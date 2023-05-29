@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, Animated, ScrollView } from 'react-native';
-import { getDatabase, ref, onValue, off, remove, push, set } from 'firebase/database';
+import { Text, View, StyleSheet, Image, TouchableOpacity, Animated, ScrollView, Switch } from 'react-native';
+import { getDatabase, ref, onValue, off, remove, push } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 import firebase from '../config/FirebaseConfig';
@@ -8,30 +8,25 @@ import firebase from '../config/FirebaseConfig';
 function Cart({ route, navigation }) {
     const [cartProducts, setCartProducts] = useState([]);
     const [fadeAnim] = useState(new Animated.Value(0));
+    const [selectedProducts, setSelectedProducts] = useState([]);
     const auth = getAuth(firebase);
     const database = getDatabase(firebase);
-    // const { cart } = route.params;
 
     useEffect(() => {
-
         fetchData();
-
     }, []);
 
     const fetchData = () => {
         const userId = auth.currentUser.uid;
-
-
         const cartRef = ref(database, `Cart/${userId}`);
 
         onValue(cartRef, (snapshot) => {
-
             const cartData = snapshot.val();
-
             if (cartData) {
                 const products = Object.keys(cartData).map((key) => ({
                     id: key,
                     ...cartData[key],
+                    selected: false,
                 }));
 
                 setCartProducts(products);
@@ -39,52 +34,46 @@ function Cart({ route, navigation }) {
                 setCartProducts([]);
             }
         });
+
         return () => {
             off(cartRef);
         };
-    }
+    };
+
+    const handleToggleSwitch = (product) => {
+        const updatedProducts = cartProducts.map((item) => {
+            if (item.id === product.id) {
+                return {
+                    ...item,
+                    selected: !item.selected,
+                };
+            }
+            return item;
+        });
+
+        setCartProducts(updatedProducts);
+    };
 
     const handleBuyNowAll = () => {
         const userId = auth.currentUser.uid;
-
         const orderRef = ref(database, `Order/${userId}`);
+        const selectedProducts = cartProducts.filter((product) => product.selected);
 
-        push(orderRef, cartProducts)
+        push(orderRef, selectedProducts)
             .then((newRef) => {
                 const orderItemId = newRef.key;
-                console.log('người dùng với id:', userId);
-                console.log('Đã thêm sản phẩm vào giỏ hàng:', cartProducts);
+                console.log('Người dùng với id:', userId);
+                console.log('Đã thêm sản phẩm vào giỏ hàng:', selectedProducts);
                 console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
                 navigation.navigate('Oder', { userId: userId });
             })
             .catch((error) => {
                 console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
             });
-        console.log('Đang mua sản phẩm:', cartProducts);
-    }
-
-    const handleBuyNow = (product) => {
-        const userId = auth.currentUser.uid;
-
-        const orderRef = ref(database, `Order/${userId}`);
-
-        push(orderRef, product)
-            .then((newRef) => {
-                const orderItemId = newRef.key;
-                console.log('người dùng với id:', userId);
-                console.log('Đã thêm sản phẩm vào giỏ hàng:', product);
-                console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
-                navigation.navigate('Oder', { userId: userId });
-            })
-            .catch((error) => {
-                console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
-            });
-        console.log('Đang mua sản phẩm:', product);
     };
 
     const handleRemoveProduct = (productId) => {
         const userId = auth.currentUser.uid;
-
         const cartRef = ref(database, `Cart/${userId}/${productId}`);
 
         remove(cartRef)
@@ -113,24 +102,30 @@ function Cart({ route, navigation }) {
         ).start();
     };
 
-    const Sum = () => {
+    const sumSelectedProductsPrice = () => {
         let sum = 0;
-        cartProducts.map((product) => {
+        selectedProducts.forEach((product) => {
             sum += product.price;
-
-        })
+        });
         return sum;
-    }
-    const Count = () => {
+    };
+
+    const countSelectedProducts = () => {
         return cartProducts.length;
-    }
+    };
+
+    useEffect(() => {
+        // update sphẩm
+        const updatedSelectedProducts = cartProducts.filter((product) => product.selected);
+        setSelectedProducts(updatedSelectedProducts);
+    }, [cartProducts]);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title} >CỬA HÀNG</Text>
+            <Text style={styles.title}>GIỎ HÀNG</Text>
             <View style={{ width: '100%', backgroundColor: 'black', height: 1 }} />
             <View style={{ margin: 15 }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số lượng: {Count()} MẶT HÀNG</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Sản Phẩm Trong Giỏ Hàng: {countSelectedProducts()}</Text>
             </View>
             <ScrollView style={{ padding: 16 }}>
                 {cartProducts.map((product) => (
@@ -147,28 +142,34 @@ function Cart({ route, navigation }) {
                                     Nhấn vào để chỉnh sửa
                                 </Animated.Text>
                                 <View style={styles.buttonContainer}>
-                                    <TouchableOpacity style={styles.button1} onPress={() => handleBuyNow(product)}>
-                                        <Ionicons name="cart-outline" size={24} color="#ff6" />
-                                        <Text style={styles.buttonText1}>Mua</Text>
-                                    </TouchableOpacity>
+                                    {/*<TouchableOpacity style={styles.button1} onPress={() => handleBuyNow(product)}>*/}
+                                    {/*    <Ionicons name="cart-outline" size={24} color="#ff6" />*/}
+                                    {/*    <Text style={styles.buttonText1}>Mua</Text>*/}
+                                    {/*</TouchableOpacity>*/}
                                     <TouchableOpacity style={styles.button} onPress={() => handleRemoveProduct(product.id)}>
                                         <Ionicons name="trash-outline" size={24} color="#fff" />
                                         <Text style={styles.buttonText}>Xóa</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
+                            <Switch
+                                style={styles.button1}
+                                value={product.selected}
+                                onValueChange={() => handleToggleSwitch(product)}
+                            />
                         </View>
-
                     </View>
                 ))}
             </ScrollView>
             <View style={{ width: '100%', backgroundColor: 'black', height: 1 }} />
             <View style={{ margin: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 15 }}>Tổng:</Text>
-                <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red', marginRight: 15 }}>{Sum()} VNĐ</Text>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red', marginRight: 15 }}>
+                    {sumSelectedProductsPrice()} VNĐ
+                </Text>
             </View>
 
-            <TouchableOpacity style={{ backgroundColor: 'black', margin: 7, padding: 15 }} onPress={() => handleBuyNowAll()}>
+            <TouchableOpacity style={{ backgroundColor: 'black', margin: 7, padding: 15 }} onPress={handleBuyNowAll}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
                         THANH TOÁN
@@ -176,9 +177,7 @@ function Cart({ route, navigation }) {
                     <Image source={require('../image/next.png')} />
                 </View>
             </TouchableOpacity>
-
         </View>
-
     );
 }
 
@@ -272,4 +271,3 @@ const styles = StyleSheet.create({
 });
 
 export default Cart;
-

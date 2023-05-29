@@ -56,7 +56,7 @@ function User({ navigation }) {
                     }}
                     style={styles.avatar}
                 />
-                <Text style={styles.userId}>{userData.userId}</Text>
+                <Text style={styles.userId}>{auth.currentUser.uid}</Text>
                 <Text style={styles.userName}>{userData.fullname}</Text>
                 <Text style={styles.userEmail}>{userData.email}</Text>
             </View>
@@ -143,8 +143,8 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     userId: {
-        marginTop: 14,
-        fontSize: 16,
+        marginTop: 50,
+        fontSize: 5,
         fontWeight: 'bold',
         marginBottom: 8,
     },

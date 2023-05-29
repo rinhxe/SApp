@@ -42,12 +42,15 @@ const Oder = ({ route }) => {
             off(cartRef);
         };
     }
+    const countSelectedProducts = () => {
+        return oderProducts.length;
+    };
     return (
         <View style={styles.container}>
             <Text style={styles.title} >ĐƠN MUA</Text>
             <View style={{ width: '100%', backgroundColor: 'black', height: 1 }} />
             <View style={{ margin: 15 }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số lượng: 1 MẶT HÀNG</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số Hóa đơn: {countSelectedProducts()}</Text>
             </View>
             <ScrollView style={{ padding: 16 }}>
                 {oderProducts.map((product) => (
