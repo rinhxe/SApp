@@ -33,7 +33,8 @@ function User({ navigation }) {
         signOut(auth)
             .then(() => {
                 console.log('Đăng xuất thành công');
-                navigation.navigate('Login');
+                // navigation.navigate('Login');
+                navigation.navigate('TabNavi');
             })
             .catch((error) => {
                 console.log('Lỗi khi đăng xuất:', error);

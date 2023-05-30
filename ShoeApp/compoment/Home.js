@@ -14,6 +14,13 @@ function Home({ navigation }) {
             .catch((error) => {
                 console.error(error);
             });
+        const interval = setInterval(() => {
+            if (swiperRef.current && swiperRef.current.scrollBy) {
+                swiperRef.current.scrollBy(1); //di chuyen anh tiep
+            }
+        }, 2000); // Thời gian tự động chuyển ảnh (ms)
+
+        return () => clearInterval(interval);
     }, []);
 
     const handleProductPress = (product) => {

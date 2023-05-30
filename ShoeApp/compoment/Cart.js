@@ -41,41 +41,40 @@ function Cart({ route, navigation }) {
     };
 
     const handleToggleSwitch = (productId) => {
-        const item = cartProducts.find((item) => item.id === productId);
-
-        if (item) {
-            // Cập nhật trạng thái của sản phẩm
-            item.selected = !item.selected;
-            setCartProducts([...cartProducts]);
-        }
+        setCartProducts((prevCartProducts) => {
+            const updatedProducts = prevCartProducts.map((product) => {
+                if (product.id === productId) {
+                    return { ...product, selected: !product.selected };
+                }
+                return product;
+            });
+            return updatedProducts;
+        });
     };
-
     const handleBuyNowAll = () => {
         const userId = auth.currentUser.uid;
         const orderRef = ref(database, `Order/${userId}`);
-        const selectedProducts = cartProducts.filter((product) => product.selected);
+        const selectedProductIds = selectedProducts.map((product) => product.id);
 
-        cartProducts.forEach((item) => {
-            if (item.selected) {
-                //Xóa sản phẩm đã chọn thanh toán
-                handleRemoveProduct(item.id);
-            }
-            //Thêm sản phẩm vào bảng order
-            push(orderRef, selectedProducts)
-                .then((newRef) => {
-                    const orderItemId = newRef.key;
-                    console.log('Người dùng với id:', userId);
-                    console.log('Đã thêm sản phẩm vào giỏ hàng:', selectedProducts);
-                    console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
-                    navigation.navigate('Oder', { userId: userId });
-                })
-                .catch((error) => {
-                    console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
-                });
-        })
+        selectedProductIds.forEach((productId) => {
+            // Xóa sản phẩm đã chọn thanh toán
+            handleRemoveProduct(productId);
+        });
 
-
+        // Thêm các sản phẩm đã chọn vào bảng order
+        push(orderRef, selectedProducts)
+            .then((newRef) => {
+                const orderItemId = newRef.key;
+                console.log('Người dùng với id:', userId);
+                console.log('Đã thêm sản phẩm vào giỏ hàng:', selectedProducts);
+                console.log('ID của sản phẩm trong giỏ hàng:', orderItemId);
+                navigation.navigate('Oder', { userId: userId });
+            })
+            .catch((error) => {
+                console.error('Lỗi thêm sản phẩm vào đơn hàng:', error);
+            });
     };
+
 
     const handleRemoveProduct = (productId) => {
         const userId = auth.currentUser.uid;
@@ -84,11 +83,13 @@ function Cart({ route, navigation }) {
         remove(cartRef)
             .then(() => {
                 console.log('Đã xóa sản phẩm thành công');
+                fetchData();
             })
             .catch((error) => {
                 console.error('Lỗi xóa sản phẩm:', error);
             });
     };
+
 
     const startAnimation = () => {
         Animated.loop(
