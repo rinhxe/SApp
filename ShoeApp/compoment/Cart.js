@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, Animated, ScrollView, Switch } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import { getDatabase, ref, onValue, off, remove, push } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 import firebase from '../config/FirebaseConfig';
+import { CheckBox } from 'react-native-elements';
 
 function Cart({ route, navigation }) {
     const [cartProducts, setCartProducts] = useState([]);
@@ -163,10 +164,11 @@ function Cart({ route, navigation }) {
                                     </TouchableOpacity>
                                 </View>
                             </View>
-                            <Switch
+                            <CheckBox
+                                checked={product.selected}
+                                checkedColor='green'
                                 style={styles.button1}
-                                value={product.selected}
-                                onValueChange={() => handleToggleSwitch(product.id)}
+                                onPress={() => handleToggleSwitch(product.id)}
                             />
                         </View>
                     </View>
@@ -261,7 +263,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        
+
     },
     button1: {
         paddingHorizontal: 16,
