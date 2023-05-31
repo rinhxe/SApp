@@ -87,7 +87,7 @@ const Oder = ({ route }) => {
             <View style={{ margin: 15 }}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Số Hóa đơn: {countSelectedProducts()}</Text>
             </View>
-            <ScrollView style={{ padding: 16 }}>
+            <ScrollView style={{ paddingHorizontal: 16 }}>
                 {
                     oderProductsList.map((product, index) => (
                         <View key={product.key} style={styles.productContainer}>
@@ -110,7 +110,7 @@ const Oder = ({ route }) => {
                                 ))}
                                 <View style={{ marginBottom: 8, flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 15 }}>Tổng:</Text>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red', marginRight: 15 }}>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'red', marginLeft: 15 }}>
                                         {sumSelectedProductsPrice(product.key)} VNĐ
                                     </Text>
                                 </View>
@@ -152,23 +152,18 @@ const styles = StyleSheet.create({
     },
     productItemContainer: {
         flexDirection: 'row',
-
     },
     productBox: {
-        borderWidth: 3,
-        borderColor: '#000000',
-        backgroundColor: '#b2a5a5',
-        borderRadius: 8,
+        backgroundColor: '#CCC',
+        borderRadius: 20,
         flexDirection: 'column',
         alignItems: 'center',
         padding: 8,
         width: '100%',
     },
     productBox1: {
-        borderWidth: 3,
-        borderColor: '#000000',
-        backgroundColor: '#b2a5a5',
-        borderRadius: 8,
+        backgroundColor: 'white',
+        borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
         padding: 8,
@@ -178,8 +173,7 @@ const styles = StyleSheet.create({
     productImage: {
         width: 100,
         height: 100,
-        resizeMode: 'cover',
-        borderRadius: 8,
+        borderRadius: 20,
     },
     productInfo: {
         flex: 1,
@@ -223,7 +217,7 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     button1: {
-        backgroundColor: '#0a3120',
+        backgroundColor: '#444444',
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 8,

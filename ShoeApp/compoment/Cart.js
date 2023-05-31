@@ -158,7 +158,7 @@ function Cart({ route, navigation }) {
                                     {/*    <Text style={styles.buttonText1}>Mua</Text>*/}
                                     {/*</TouchableOpacity>*/}
                                     <TouchableOpacity style={styles.button} onPress={() => handleRemoveProduct(product.id)}>
-                                        <Ionicons name="trash-outline" size={24} color="#fff" />
+                                        <Ionicons name="trash-outline" size={20} color="#fff" />
                                         <Text style={styles.buttonText}>Xóa</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -180,7 +180,7 @@ function Cart({ route, navigation }) {
                 </Text>
             </View>
 
-            <TouchableOpacity style={{ backgroundColor: 'black', margin: 7, padding: 15 }} onPress={handleBuyNowAll}>
+            <TouchableOpacity style={{ backgroundColor: '#666666', margin: 7, padding: 15, borderRadius: 20 }} onPress={handleBuyNowAll}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
                         THANH TOÁN
@@ -209,19 +209,18 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     productBox: {
-        borderWidth: 3,
-        borderColor: '#000000',
-        backgroundColor: '#b2a5a5',
-        borderRadius: 8,
+        backgroundColor: 'white',
+        borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
         padding: 8,
     },
     productImage: {
         width: 100,
-        height: 100,
-        resizeMode: 'cover',
-        borderRadius: 8,
+        height: 140,
+        borderRadius: 20,
+        marginVertical: '2%',
+        marginLeft: '2%',
     },
     productInfo: {
         flex: 1,
@@ -254,18 +253,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         marginTop: 8,
+
     },
     button: {
         backgroundColor: '#e81d1d',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 8,
+        padding: 8,
+        borderRadius: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: 8,
+        
     },
     button1: {
-        backgroundColor: '#0a3120',
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 8,
@@ -275,7 +273,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 13,
         fontWeight: 'bold',
         marginLeft: 4,
     },

@@ -19,7 +19,6 @@ export default function Favourite({ navigation }) {
 
   useEffect(() => {
     upData();
-
   }, [])
 
 
@@ -163,7 +162,7 @@ export default function Favourite({ navigation }) {
       .catch((error) => {
         console.error('Lỗi thêm sản phẩm vào giỏ hàng:', error);
       });
-  } 
+  }
   return (
     <View style={styles.container}>
 
@@ -494,9 +493,9 @@ const styles = StyleSheet.create({
   },
   productBox: {
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 16,
     padding: 10,
-    backgroundColor: '#D7D8D9',
+    backgroundColor: 'white',
     flexDirection: 'row',
   },
   productImage: {
@@ -520,17 +519,19 @@ const styles = StyleSheet.create({
   addButton: {
     flexDirection: 'row',
     padding: 3,
-    borderWidth: 1,
     borderColor: '#000000',
-    width: 115,
-    backgroundColor: 'white',
+    width: 130,
+    backgroundColor: '#D7D8D9',
+    borderRadius: 16
   },
   addButtonLabel: {
     fontSize: 13,
+    padding: 4,
+    marginLeft: 5
   },
   addButtonIcon: {
     width: 20,
     height: 20,
-    marginLeft: 5,
+    margin: 4
   },
 });
