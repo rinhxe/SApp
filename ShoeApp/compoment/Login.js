@@ -9,7 +9,7 @@ import { Alert } from 'react-native';
 
 import firebase from '../config/FirebaseConfig';
 import { getDatabase, set, ref, push, remove, onValue } from "firebase/database";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from '@firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from '@firebase/auth';
 
 const Login = ({ navigation }) => {
     const [listUser, setListUser] = useState([]);
@@ -75,7 +75,7 @@ const Login = ({ navigation }) => {
                     const userId = userCredential.user.uid;
                     console.log('ID người dùng đã đăng nhập:', userId);
 
-                    // Lấy dữ liệu từ Realtime Database 
+                    // Lấy dữ liệu từ Realtime Database
                     const usersRef = ref(database, '/registrations/' + userId);
 
                     onValue(usersRef, (snapshot) => {
@@ -83,13 +83,14 @@ const Login = ({ navigation }) => {
 
                         setListUser(usersData);
                         console.log('Dữ liệu người dùng:', usersData);
-                        
+
                         navigation.navigate('TabNavi',{ isAuthenticated: true });
 
                     });
                 })
                 .catch((error) => {
                     console.error('Lỗi đăng nhập:', error);
+                    Alert.alert('Thông báo', 'Sai email hoặc mật khẩu!');
                 });
             // const correctEmail = "admin@gmail.com";
             // const correctPassword = "admin";
@@ -115,7 +116,22 @@ const Login = ({ navigation }) => {
 
     }; // end hàm đăng nhập
     const handleForgotPassword = () => {
-        Linking.openURL('tel:19001331');
+        // Linking.openURL('tel:19001331');
+        const auth = getAuth(firebase);
+        if (email!= null){
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    alert("đã gửi email reset mật khẩu mới, vui lòng check email");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert("Không tồn tại User");
+                    // ..
+                });
+        }else {
+            alert("Bạn cần điền email rồi ấn quên mật khẩu để lấy mật khẩu mới")
+        }
     }; // end quên mật khẩu
 
 

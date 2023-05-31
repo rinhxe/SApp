@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth, signOut, deleteUser } from 'firebase/auth';
 import { getDatabase, off, onValue, ref } from 'firebase/database';
 import firebase from '../config/FirebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -50,6 +50,21 @@ function User({ navigation }) {
     if (!userData) {
         return null;
     }
+    const handleDeleteProfile = () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        deleteUser(user)
+            .then(() => {
+                console.log('Hồ sơ đã được xóa');
+                alert("đã xóa hồ sơ")
+                navigation.navigate('TabNavi')
+            })
+            .catch((error) => {
+                console.log('Lỗi khi xóa hồ sơ:', error);
+            });
+    };
+
 
     return (
         <View style={styles.container}>
@@ -107,6 +122,10 @@ function User({ navigation }) {
                 >
                     <Icon name="lock" size={20} color="blue" />
                     <Text style={styles.sectionText}>Đổi mật khẩu</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.section} onPress={handleDeleteProfile}>
+                    <Icon name="trash" size={20} color="red" />
+                    <Text style={styles.sectionText}>Xóa hồ sơ</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.section} onPress={handleLogout}>
