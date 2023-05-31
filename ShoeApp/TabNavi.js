@@ -14,7 +14,7 @@ const TabNavi = ({ route }) => {
     const { isAuthenticated } = route.params || { isAuthenticated: false };
     return (
         <Tab.Navigator
-            initialRouteName={"Home"}
+            initialRouteName={"Trang Chủ"}
             screenOptions={{ headerShown: false }}
             tabBarOptions={{
                 keyboardHidesTabBar: true,
@@ -23,13 +23,13 @@ const TabNavi = ({ route }) => {
                 labelStyle: { paddingBottom: 10, fontSize: 10 },
             }}>
 
-            <Tab.Screen name={"Home"} component={Home}
+            <Tab.Screen name={"Trang Chủ"} component={Home}
 
                 options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name='home' color={color} size={size} />
                 }}
             />
-            <Tab.Screen name={"Search"} component={Search}
+            <Tab.Screen name={"Tìm Kiếm"} component={Search}
                 options={{
                     tabBarIcon: ({ color, size }) => <Ionicons name='search' color={color} size={size} />
 
@@ -38,14 +38,14 @@ const TabNavi = ({ route }) => {
 
 
             {isAuthenticated ? (
-                <Tab.Screen name={"Favourite"} component={Favourite}
+                <Tab.Screen name={"Yêu Thích"} component={Favourite}
                     options={{
                         tabBarIcon: ({ color, size }) => <Ionicons name='heart' color={color} size={size} />
                     }} />
 
             ) : (
                 <Tab.Screen
-                    name="NoFavourite"
+                    name="Yêu Thích"
                     component={NoFavourite}
                     options={{
                         tabBarLabel: 'Favourite',
@@ -56,7 +56,7 @@ const TabNavi = ({ route }) => {
 
             {isAuthenticated ? (
                 <Tab.Screen
-                    name="Cart"
+                    name="Giỏ Hàng"
                     component={Cart}
                     options={{
                         tabBarIcon: ({ color, size }) => <Ionicons name='cart' color={color} size={size} />
@@ -64,7 +64,7 @@ const TabNavi = ({ route }) => {
                 />
             ) : (
                 <Tab.Screen
-                    name="NoCart"
+                    name="Giỏ Hàng"
                     component={NoCart}
                     options={{
                         tabBarLabel: 'Cart',
@@ -75,19 +75,19 @@ const TabNavi = ({ route }) => {
 
             {isAuthenticated ? (
                 <Tab.Screen
-                    name="User"
+                    name="Tài Khoản"
                     component={User}
                     options={{
-                        tabBarLabel: 'User',
+                        tabBarLabel: 'Tài Khoản',
                         tabBarIcon: ({ color, size }) => <Ionicons name='person' color={color} size={size} />
                     }}
                 />
             ) : (
                 <Tab.Screen
-                    name="NotLoginUser"
+                    name="Tài Khoản"
                     component={NotLoginUser}
                     options={{
-                        tabBarLabel: 'User',
+                        tabBarLabel: 'Tài Khoản',
                         tabBarIcon: ({ color, size }) => <Ionicons name='person' color={color} size={size} />
                     }}
                 />
