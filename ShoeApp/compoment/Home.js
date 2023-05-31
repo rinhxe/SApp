@@ -30,13 +30,13 @@ function Home({ navigation }) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Danh Mục Sản Phẩm</Text>
+            
+            <View style={{ width: '100%', backgroundColor: 'black', height: 1 }} />
             <View style={styles.slide}>
                 <Swiper
                     ref={swiperRef}
                     autoplay={false} // Tắt chế độ autoplay của Swiper
-                    showsPagination={true}
-                    dotStyle={styles.paginationDot}//hien thi dau cham de dem so anh
-                    activeDotStyle={styles.paginationActiveDot}//hien thi dau cham khi anh den
+                    showsPagination={true} 
                 >
                     <View style={styles.slide_img}>
                         <Image source={require('../image/logo.png')} style={styles.imageBackground} />
@@ -59,6 +59,7 @@ function Home({ navigation }) {
                 </Swiper>
             </View>
             <Text style={styles.title1}>Sản Phẩm Thịnh Hành</Text>
+             
             <ScrollView contentContainerStyle={styles.contentContainer} horizontal={true} showsHorizontalScrollIndicator={false}>
                 {products.map((product) => (
                     <TouchableOpacity key={product.styleid} style={styles.productItem} onPress={() => handleProductPress(product)}>
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         height:400,
-        marginTop: 30
+        marginTop: 15
     },
     productFrame: {
         width: 250,
@@ -126,13 +127,14 @@ const styles = StyleSheet.create({
         
     },
     title: {
-        fontSize: 30,
+        fontSize: 23,
         fontWeight: 'bold',
-        marginTop: 10,
-        marginLeft: 20
+        marginTop: 40,
+        marginLeft: 15,
+        marginBottom: 7
     },
     title1: {
-        fontSize: 23,
+        fontSize: 20,
         fontWeight: 'bold',
         marginLeft: 20
     },
