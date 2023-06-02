@@ -1,8 +1,8 @@
 const express = require('express');
 const expressHbs = require('express-handlebars');
 const bodyparser = require('body-parser');
-const url = 'mongodb+srv://namnguyen:Nam280103@cluster0.zyd4ou2.mongodb.net/DB?retryWrites=true&w=majority';
-const mongoose = require('mongoose');
+// const url = 'mongodb+srv://namnguyen:Nam280103@cluster0.zyd4ou2.mongodb.net/DB?retryWrites=true&w=majority';
+// const mongoose = require('mongoose');
 const userController = require('./Controllers/Controller');
 const app = express();
 
@@ -23,7 +23,19 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 
 // Kết nối cơ sở dữ liệu
-mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true });
+const admin = require('firebase-admin');
+const credentials = require('./key.json');
+
+admin.initializeApp({
+    credential: admin.credential.cert(credentials)
+});
+
+const db = admin.firestore();
+
 
 app.use('/', userController);
-app.listen(9999);
+const PORT = process.env.PORT || 9999;
+
+app.listen(PORT, () => {
+    console.log('Server is running');
+});

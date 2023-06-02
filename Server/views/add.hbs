@@ -18,16 +18,20 @@
         <h2>Thêm mới sản phẩm</h2>
         <form action="/add" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
-                <label for="product_name">Tên sản phẩm</label>
-                <input type="text" name="product_name" class="form-control" required>
+                <label for="product_additional_info">Tên sản phẩm</label>
+                <input type="text" name="product_additional_info" class="form-control" required>
+            </div>
+             <div class="mb-3">
+                <label for="brands_filter_facet">Loại sản phẩm</label>
+                <input type="text" name="brands_filter_facet" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label for="product_price">Giá tiền</label>
-                <input type="number" min="1" name="product_price" class="form-control" required>
+                <label for="price">Giá tiền</label>
+                <input type="number" min="1" name="price" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label for="product_image">Ảnh sản phẩm</label>
-                <input type="file" name="product_image" class="form-control" required>
+                <label for="search_image">Ảnh sản phẩm</label>
+                <input type="text" name="search_image" class="form-control" required>
             </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Lưu</button>
             <a href="/home" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>

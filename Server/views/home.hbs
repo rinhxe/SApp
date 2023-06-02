@@ -31,6 +31,7 @@
             <thead>
                 <tr>
                     <th>Tên sản phẩm</th>
+                    <th>Loại sản phẩm</th>
                     <th>Giá tiền</th>
                     <th>Ảnh sản phẩm</th>
                     <th></th>
@@ -40,9 +41,10 @@
             <tbody>
                 {{#each arrProduct}}
                 <tr>
-                    <td>{{this.product_name}}</td>
-                    <td>{{this.product_price}}</td>
-                    <td><img src="data:image/png;base64,{{this.product_image}}" style="height: 50px; width: 50px;" alt="Ảnh xe"></td>
+                    <td>{{this.product_additional_info}}</td>
+                    <td>{{this.brands_filter_facet}}</td>
+                    <td>{{this.price}}</td>
+                    <td><img src="{{this.search_image}}" style="height: 50px; width: 50px;" alt="Ảnh xe"></td>
                     <td>
                         
                         <button class="btn btn-primary btn-action" data-bs-toggle="modal"
@@ -51,7 +53,7 @@
                             data-bs-target="#XoaSP-{{this._id}}"><i class="fas fa-trash"></i>Xoá</button>
 
                         <!-- Modal Xóa Sản phẩm-->
-                        <div class="modal fade" id="XoaSP-{{this._id}}" tabindex="-1" aria-labelledby="XoaSPLabel"
+                        <div class="modal fade" id="XoaSP-{{this.styleid}}" tabindex="-1" aria-labelledby="XoaSPLabel"
                             aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -61,13 +63,13 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        Bạn có chắc chắn muốn xóa {{this.product_name}}?
+                                        Bạn có chắc chắn muốn xóa {{this.product_additional_info}}?
                                     </div>
 
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Hủy</button>
-                                        <form action="/delete/{{this._id}}" method="POST">
+                                        <form action="/delete/{{this.styleid}}" method="delete">
                                             <button type="submit" class="btn btn-danger">Xóa</button>
                                         </form>
 
@@ -77,7 +79,7 @@
                         </div>
 
                         <!-- Modal Sửa Sản phẩm-->
-                        <div class="modal fade" id="SuaSP{{this._id}}" tabindex="-1" aria-labelledby="SuaSPLabel"
+                        <div class="modal fade" id="SuaSP{{this.styleid}}" tabindex="-1" aria-labelledby="SuaSPLabel"
                             aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -87,14 +89,14 @@
                                             aria-label="Close"></button>
                                     </div>
 
-                                    <form action="/edit/{{this._id}}" method="POST" enctype="multipart/form-data"
+                                    <form action="/update/{{this.styleid}}" method="POST" enctype="multipart/form-data"
                                         id="SuaSP">
                                         <div class="modal-body">
 
-                                            <label for="product_image" class="form-label"> Ảnh đại diện:</label>
-                                            <img src="data:image/png;base64,{{this.product_image}}" style="height: 50px; width: 50px;" alt="Ảnh xe">
-                                            <input type="file" class="form-control" id="files" name="product_image"
-                                                accept="image/*" style="margin-bottom: 7px" value="{{this.product_image}}" required>
+                                            <label for="search_image" class="form-label"> Ảnh đại diện:</label>
+                                            <img src="{{this.search_image}}" style="height: 50px; width: 50px;" alt="Ảnh sản phẩm">
+                                            <input type="text" class="form-control" id="files" name="product_image"
+                                                style="margin-bottom: 7px" value="{{this.search_image}}" required>
 
                                             <label for="product_name" class="form-label"> Tên sản phẩm:</label>
                                             <input class="form-control" type="text" placeholder="Tên sản phẩm"
