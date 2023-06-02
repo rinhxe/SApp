@@ -32,12 +32,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 
-<<<<<<< HEAD
+
 const PORT = process.env.PORT || 9999;
 app.use('/', userController);
-=======
-const PORT = process.env.PORT || 3000;
->>>>>>> 00532a7609adef09e0c403abddf69a872bae946f
 
 app.listen(PORT, () => {
     console.log('Server is running');
