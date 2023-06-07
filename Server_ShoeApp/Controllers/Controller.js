@@ -30,6 +30,7 @@ app.get('/add', async (req, res) => {
 
 app.post('/create', async (req, res) => {
     try {
+        
         const productData = {
             search_image: req.query.search_image,
             brands_filter_facet: req.query.brands_filter_facet,
@@ -47,19 +48,39 @@ app.post('/create', async (req, res) => {
 
 
 
+// app.get('/read/all', async (req, res) => {
+//     try {
+//         const ProductRef = db.collection('products');
+//         const response = await ProductRef.get();
+//         let responseArr = [];
+//         response.forEach(doc => {
+//             responseArr.push(doc.data());
+//         });
+//         res.send(responseArr);
+//     } catch (error) {
+//         res.send(error);
+//     }
+// });
+
 app.get('/read/all', async (req, res) => {
     try {
-        const ProductRef = db.collection('products');
-        const response = await ProductRef.get();
-        let responseArr = [];
-        response.forEach(doc => {
-            responseArr.push(doc.data());
-        });
-        res.send(responseArr);
+      const productsSnapshot = await db.collection('products').get();
+      const products = productsSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        data.id = doc.id;
+        return data;
+      });
+  
+      const response = {
+        products: products 
+      };
+  
+      res.json(response);
     } catch (error) {
-        res.send(error);
+      res.status(500).json({ error: 'Server Error' });
     }
-});
+  });
+  
 
 app.post('/update/:id', async (req, res) => {
     try {
@@ -91,6 +112,7 @@ app.post('/delete/:id', async (req, res) => {
 
 app.get('/search', async (req, res) => {
     try {
+        // console.log(req.query.q);
         const query = req.query.q; 
         const productsSnapshot = await db.collection('products').get();
 
