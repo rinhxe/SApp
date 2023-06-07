@@ -12,7 +12,7 @@ app.get('/home', async (req, res) => {
         const productsSnapshot = await db.collection('products').get();
         const products = productsSnapshot.docs.map((doc) => {
             const data = doc.data();
-            data.id = doc.id; 
+            data.id = doc.id;
             return data;
         });
 
@@ -31,13 +31,13 @@ app.get('/add', async (req, res) => {
 app.post('/create', async (req, res) => {
     try {
         const productData = {
-            search_image: req.body.search_image,
-            brands_filter_facet: req.body.brands_filter_facet,
-            price: req.body.price,
-            product_additional_info: req.body.product_additional_info
+            search_image: req.query.search_image,
+            brands_filter_facet: req.query.brands_filter_facet,
+            price: req.query.price,
+            product_additional_info: req.query.product_additional_info
         };
 
-        console.log(req.body.brands_filter_facet);
+        console.log(req.body);
         const response = await db.collection('products').add(productData);
         res.redirect('/home');
     } catch (err) {
@@ -88,6 +88,26 @@ app.post('/delete/:id', async (req, res) => {
         res.send(err);
     }
 });
+
+app.get('/search', async (req, res) => {
+    try {
+        const query = req.query.q; 
+        const productsSnapshot = await db.collection('products').get();
+
+        const products = productsSnapshot.docs.map((doc) => {
+            const data = doc.data();
+            data.id = doc.id;
+            return data;
+        })      
+        .filter((product) => product.product_additional_info.includes(query)); 
+
+
+        res.render('home', { query: query, arrProduct: products });
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
 
 
 
