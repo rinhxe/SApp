@@ -67,10 +67,9 @@ app.get('/read/all', async (req, res) => {
       const productsSnapshot = await db.collection('products').get();
       const products = productsSnapshot.docs.map((doc) => {
         const data = doc.data();
-        data.id = doc.id;
+        data.styleid = doc.id;
         return data;
       });
-  
       const response = {
         products: products 
       };
