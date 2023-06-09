@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/home', async (req, res) => {
+app.get('/home', async(req, res) => {
     try {
         const productsSnapshot = await db.collection('products').get();
         const products = productsSnapshot.docs.map((doc) => {
@@ -22,105 +22,102 @@ app.get('/home', async (req, res) => {
     }
 });
 
-
-app.get('/add', async (req, res) => {
+app.get('/add', async(req, res) => {
     res.render('add.hbs');
 });
 
-
-app.post('/create', async (req, res) => {
+app.post('/create', async(req, res) => {
     try {
-        
+        const { search_image, brands_filter_facet, price, product_additional_info } = req.body;
+        if (!search_image || !brands_filter_facet || !price || !product_additional_info) {
+            return res.status(400).send('Lỗi dữ liệu');
+        }
+
         const productData = {
-            search_image: req.query.search_image,
-            brands_filter_facet: req.query.brands_filter_facet,
-            price: req.query.price,
-            product_additional_info: req.query.product_additional_info
+            search_image,
+            brands_filter_facet,
+            price,
+            product_additional_info,
         };
 
-        console.log(req.body);
-        const response = await db.collection('products').add(productData);
+        await db.collection('products').add(productData);
         res.redirect('/home');
     } catch (err) {
-        res.send(err);
+        console.error('Lỗi khi thêm dữ liệu:', err);
+        res.status(500).send('Server Error');
     }
 });
 
 
-
-// app.get('/read/all', async (req, res) => {
-//     try {
-//         const ProductRef = db.collection('products');
-//         const response = await ProductRef.get();
-//         let responseArr = [];
-//         response.forEach(doc => {
-//             responseArr.push(doc.data());
-//         });
-//         res.send(responseArr);
-//     } catch (error) {
-//         res.send(error);
-//     }
-// });
-
-app.get('/read/all', async (req, res) => {
+app.get('/read/all', async(req, res) => {
     try {
-      const productsSnapshot = await db.collection('products').get();
-      const products = productsSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        data.styleid = doc.id;
-        return data;
-      });
-      const response = {
-        products: products 
-      };
-  
-      res.json(response);
-    } catch (error) {
-      res.status(500).json({ error: 'Server Error' });
-    }
-  });
-  
-
-app.post('/update/:id', async (req, res) => {
-    try {
-        const ProductRef = db.collection('products').doc(req.params.id);
-        await ProductRef.update({
-            search_image: req.body.search_image,
-            brands_filter_facet: req.body.brands_filter_facet,
-            price: req.body.price,
-            product_additional_info: req.body.product_additional_info
+        const productsSnapshot = await db.collection('products').get();
+        const products = productsSnapshot.docs.map((doc) => {
+            const data = doc.data();
+            data.styleid = doc.id;
+            return data;
         });
-        // res.send(ProductRef);
-        res.redirect('/home');
+        const response = {
+            products: products
+        };
+
+        res.json(response);
     } catch (error) {
-        res.send(error);
+        res.status(500).json({ error: 'Server Error' });
     }
 });
 
-app.post('/delete/:id', async (req, res) => {
+
+app.post('/update/:id', async(req, res) => {
     try {
         const productId = req.params.id;
-        // Xóa sản phẩm với ID tương ứng từ Firebase
+        const productRef = db.collection('products').doc(productId);
+        const { search_image, brands_filter_facet, price, product_additional_info } = req.body;
+
+        if (!search_image || !brands_filter_facet || !price || !product_additional_info) {
+            throw new Error('Lỗi Nhập dữ liệu');
+        }
+
+        await productRef.update({
+            search_image,
+            brands_filter_facet,
+            price,
+            product_additional_info,
+        });
+
+        res.redirect('/home');
+    } catch (error) {
+        res.send(error.message);
+    }
+});
+
+
+
+
+
+app.post('/delete/:id', async(req, res) => {
+    try {
+        const productId = req.params.id;
         await db.collection('products').doc(productId).delete();
 
-        res.redirect('/home'); // Chuyển hướng về trang home sau khi xóa thành công
+        res.redirect('/home');
     } catch (err) {
         res.send(err);
     }
 });
 
-app.get('/search', async (req, res) => {
+app.get('/search', async(req, res) => {
     try {
         // console.log(req.query.q);
-        const query = req.query.q; 
+        const query = req.query.q;
         const productsSnapshot = await db.collection('products').get();
 
         const products = productsSnapshot.docs.map((doc) => {
-            const data = doc.data();
-            data.id = doc.id;
-            return data;
-        })      
-        .filter((product) => product.product_additional_info.includes(query)); 
+                const data = doc.data();
+                data.id = doc.id;
+                return data;
+            })
+            .filter((product) => product.product_additional_info.includes(query));
 
 
         res.render('home', { query: query, arrProduct: products });
@@ -128,8 +125,5 @@ app.get('/search', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
-
-
-
 
 module.exports = app;

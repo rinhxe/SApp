@@ -43,7 +43,7 @@
                 <tr>
                     <td>{{this.product_additional_info}}</td>
                     <td>{{this.brands_filter_facet}}</td>
-                    <td>{{this.price}}</td>
+                    <td>{{this.price}} VNĐ</td>
                     <td><img src="{{this.search_image}}" style="height: 50px; width: 50px;" alt="Ảnh xe"></td>
                     <td>
 
@@ -91,14 +91,13 @@
                                             aria-label="Close"></button>
                                     </div>
 
-                                    <form action="/update/{{this.id}}" method="POST" enctype="multipart/form-data"
-                                        id="SuaSP{{this.id}}">
+                                    <form action="/update/{{this.id}}" method="POST" id="SuaSP{{this.id}}">
                                         <div class="modal-body">
 
                                             <label for="search_image" class="form-label"> Ảnh sản phẩm:</label>
                                             <img src="{{this.search_image}}" style="height: 50px; width: 50px;"
                                                 alt="Ảnh sản phẩm">
-                                            <input type="text" class="form-control" id="files" name="search_image"
+                                            <input type="url" class="form-control" id="search_image " name="search_image"
                                                 style="margin-bottom: 7px" value="{{this.search_image}}" required>
 
                                             <label for="product_additional_info" class="form-label"> Tên sản phẩm:</label>
@@ -124,6 +123,7 @@
                                         </div>
 
                                     </form>
+
                                 </div>
                             </div>
                         </div>
