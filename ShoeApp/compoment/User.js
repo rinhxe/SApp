@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native';
 import { getAuth, signOut, deleteUser } from 'firebase/auth';
-import { getDatabase, off, onValue, ref } from 'firebase/database';
+import { getDatabase, off, onValue, ref,remove  } from 'firebase/database';
 import firebase from '../config/FirebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -53,19 +53,28 @@ function User({ navigation }) {
     const handleDeleteProfile = () => {
         const auth = getAuth();
         const user = auth.currentUser;
+        const userId = user.uid;
+
+        const database = getDatabase();
+        const userRef = ref(database, `registrations/${userId}`);
 
         deleteUser(user)
             .then(() => {
-                console.log('Hồ sơ đã được xóa');
-                alert("đã xóa hồ sơ")
-                navigation.navigate('TabNavi')
+                console.log('Tài khoản đã được xóa');
+                remove(userRef)
+                    .then(() => {
+                        console.log('Dữ liệu người dùng đã được xóa');
+                        alert('Đã xóa hồ sơ');
+                        navigation.navigate('TabNavi');
+                    })
+                    .catch((error) => {
+                        console.log('Lỗi khi xóa dữ liệu người dùng:', error);
+                    });
             })
             .catch((error) => {
-                console.log('Lỗi khi xóa hồ sơ:', error);
+                console.log('Lỗi khi xóa tài khoản:', error);
             });
     };
-
-
     return (
         <View style={styles.container}>
 

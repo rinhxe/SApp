@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import {View, TextInput, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
-import { getDatabase, off, onValue, ref, update } from 'firebase/database';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+import { getDatabase, ref, update } from 'firebase/database';
+import { getAuth, reauthenticateWithCredential, updatePassword, EmailAuthProvider } from 'firebase/auth';
 import firebase from '../config/FirebaseConfig';
-const ChangePassword = ({route,navigation}) => {
-    const { password ,userId} = route.params;
+
+const ChangePassword = ({ route, navigation }) => {
+    const { userId } = route.params;
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -12,41 +14,46 @@ const ChangePassword = ({route,navigation}) => {
     const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
 
     const handleSavePassword = () => {
-        if (oldPassword !== password) {
-            setErrorOldPassword(true);
-        } else {
-            setErrorOldPassword(false);
-        }
-
         if (newPassword.length < 6) {
             setErrorNewPassword(true);
+            return;
         } else {
             setErrorNewPassword(false);
         }
 
         if (newPassword !== confirmPassword) {
             setErrorConfirmPassword(true);
+            return;
         } else {
             setErrorConfirmPassword(false);
         }
 
-        if (oldPassword && newPassword && confirmPassword && !errorOldPassword && !errorNewPassword && !errorConfirmPassword) {
-            // Thực hiện đổi mật khẩu
-            const database = getDatabase(firebase);
-            const userRef = ref(database, `registrations/${userId}`);
-            update(userRef, { pass: newPassword })
-                .then(() => {
-                   alert('done')
-                    navigation.navigate('TabNavi')
-                })
-                .catch((error) => {
-                   alert('Lỗi rồi')
-                });
-        } else {
-            alert('Vui lòng điền đầy đủ thông tin.');
-        }
-    };
+        const user = getAuth().currentUser;
+        const credential = EmailAuthProvider.credential(user.email, oldPassword);
 
+        reauthenticateWithCredential(user, credential)
+            .then(() => {
+                updatePassword(user, newPassword)
+                    .then(() => {
+                        const database = getDatabase(firebase);
+                        const userRef = ref(database, `registrations/${userId}`);
+                        update(userRef, { pass: newPassword })
+                            .then(() => {
+                                alert('Đã Đổi Mật Khẩu');
+                                navigation.navigate('TabNavi');
+                            })
+                            .catch((error) => {
+                                alert('Lỗi Cập nhật mật khẩu');
+                            });
+                    })
+                    .catch((error) => {
+                        alert('Lỗi thay đổi mật khẩu');
+                    });
+            })
+            .catch((error) => {
+                setErrorOldPassword(true);
+            });
+    };
 
     return (
         <View style={styles.container}>
@@ -57,14 +64,9 @@ const ChangePassword = ({route,navigation}) => {
                     placeholder="Nhập mật khẩu cũ"
                     value={oldPassword}
                     onChangeText={setOldPassword}
-                    style={[
-                        styles.input,
-                        errorOldPassword && styles.inputError
-                    ]}
+                    style={[styles.input, errorOldPassword && styles.inputError]}
                 />
-                {errorOldPassword && (
-                    <Text style={styles.errorText}>Mật khẩu cũ không chính xác</Text>
-                )}
+                {errorOldPassword && <Text style={styles.errorText}>Mật khẩu cũ không chính xác</Text>}
             </View>
 
             <View style={styles.inputContainer}>
@@ -74,10 +76,7 @@ const ChangePassword = ({route,navigation}) => {
                     placeholder="Nhập mật khẩu mới"
                     value={newPassword}
                     onChangeText={setNewPassword}
-                    style={[
-                        styles.input,
-                        errorNewPassword && styles.inputError
-                    ]}
+                    style={[styles.input, errorNewPassword && styles.inputError]}
                 />
                 {errorNewPassword && (
                     <Text style={styles.errorText}>Mật khẩu mới phải có ít nhất 6 ký tự</Text>
@@ -91,20 +90,19 @@ const ChangePassword = ({route,navigation}) => {
                     placeholder="Xác nhận mật khẩu mới"
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
-                    style={[
-                        styles.input,
-                        errorConfirmPassword && styles.inputError
-                    ]}
+                    style={[styles.input, errorConfirmPassword && styles.inputError]}
                 />
                 {errorConfirmPassword && (
                     <Text style={styles.errorText}>Xác nhận mật khẩu mới không khớp</Text>
                 )}
             </View>
-            <TouchableOpacity style={{ backgroundColor: 'black', margin: 7,padding:15,marginTop:30 }} onPress={handleSavePassword}>
+
+            <TouchableOpacity
+                style={{ backgroundColor: 'black', margin: 7, padding: 15, marginTop: 30 }}
+                onPress={handleSavePassword}
+            >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
-                        Lưu mật khẩu
-                    </Text>
+                    <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>Lưu mật khẩu</Text>
                     <Image source={require('../image/next.png')} />
                 </View>
             </TouchableOpacity>
@@ -121,7 +119,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     inputContainer: {
-        marginTop:20,
+        marginTop: 20,
         marginBottom: 16,
     },
     label: {
@@ -143,5 +141,4 @@ const styles = StyleSheet.create({
         color: 'red',
         marginTop: 4,
     },
-
 });
