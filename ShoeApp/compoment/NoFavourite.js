@@ -30,7 +30,7 @@ export default function NoFavourite({ navigation }) {
                         paddingRight: 30,
                         alignItems: 'center'
                     }}
-                    onPress={() => { navigation.navigate('Home') }}
+                    onPress={() => { navigation.navigate('AllShoes') }}
                 >
                     <View>
                         <Text style={{

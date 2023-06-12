@@ -30,13 +30,13 @@ function Home({ navigation }) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Danh Mục Sản Phẩm</Text>
-            
+
             <View style={{ width: '100%', backgroundColor: 'black', height: 1 }} />
             <View style={styles.slide}>
                 <Swiper
                     ref={swiperRef}
                     autoplay={false} // Tắt chế độ autoplay của Swiper
-                    showsPagination={true} 
+                    showsPagination={true}
                 >
                     <View style={styles.slide_img}>
                         <Image source={require('../image/logo.png')} style={styles.imageBackground} />
@@ -58,8 +58,12 @@ function Home({ navigation }) {
                     </View>
                 </Swiper>
             </View>
-            <Text style={styles.title1}>Sản Phẩm Thịnh Hành</Text>
-             
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Text style={styles.title1}>Sản Phẩm Thịnh Hành</Text>
+                <TouchableOpacity onPress={()=>{ navigation.navigate('AllShoes' );}}>
+                    <Text style={{ marginRight: 18 }}>Xem tất cả</Text>
+                </TouchableOpacity>
+            </View>
             <ScrollView contentContainerStyle={styles.contentContainer} horizontal={true} showsHorizontalScrollIndicator={false}>
                 {products.map((product) => (
                     <TouchableOpacity key={product.styleid} style={styles.productItem} onPress={() => handleProductPress(product)}>
@@ -72,7 +76,7 @@ function Home({ navigation }) {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-            
+
         </View>
     );
 }
@@ -90,7 +94,7 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     contentContainer: {
-        height:400,
+        height: 400,
         marginTop: 15
     },
     productFrame: {
@@ -99,7 +103,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         borderRadius: 16,
         backgroundColor: 'white',
-        alignItems:'center'
+        alignItems: 'center'
     },
     productImage: {
         width: '90%',
@@ -112,19 +116,19 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginTop: 18,
-        
+
     },
     productPrice: {
         fontSize: 18,
         color: '#888',
         marginTop: 10,
-        
+
     },
     productAdditionalInfo: {
         fontSize: 14,
         color: '#888',
         marginTop: 10,
-        
+
     },
     title: {
         fontSize: 23,
@@ -162,7 +166,7 @@ const styles = StyleSheet.create({
         width: 120,
         backgroundColor: 'black',
         borderRadius: 15,
-        marginHorizontal: 10, 
+        marginHorizontal: 10,
         marginTop: 50
     },
     text_slide: {
@@ -170,9 +174,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         marginTop: 10,
-        fontWeight:'bold'
+        fontWeight: 'bold'
     },
-    paginationDot:{
+    paginationDot: {
         marginVertical: 10
     },
     paginationActiveDot: {
