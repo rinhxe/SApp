@@ -7,13 +7,16 @@ import firebase from '../config/FirebaseConfig';
 import { CheckBox } from 'react-native-elements';
 
 function Cart({ route, navigation }) {
+    const [userData, setUserData] = useState(null);
     const [cartProducts, setCartProducts] = useState([]);
     const [fadeAnim] = useState(new Animated.Value(0));
     const [selectedProducts, setSelectedProducts] = useState([]);
+    const [shippingAddress, setShippingAddress] = useState('');
     const auth = getAuth(firebase);
     const database = getDatabase(firebase);
 
     useEffect(() => {
+        fetchShippingAddress();
         fetchData();
     }, []);
 
@@ -35,12 +38,34 @@ function Cart({ route, navigation }) {
                 setCartProducts([]);
             }
         });
+        ///
+        const userRef = ref(database, `registrations/${userId}`);
+        onValue(userRef, (snapshot) => {
+            const userData = snapshot.val();
+            if (userData) {
+                setUserData(userData);
+            } else {
+                setUserData(null);
+            }
+        });
 
         return () => {
             off(cartRef);
         };
     };
-
+    const fetchShippingAddress = () => {
+        const userId = auth.currentUser.uid;
+        const userRef = ref(database, `registrations/${userId}`);
+        onValue(userRef, (snapshot) => {
+            const userData = snapshot.val();
+            if (userData) {
+                const address = userData.address;
+                setShippingAddress(address);
+            } else {
+                setShippingAddress('');
+            }
+        });
+    };
     const handleToggleSwitch = (productId) => {
         setCartProducts((prevCartProducts) => {
             const updatedProducts = prevCartProducts.map((product) => {
@@ -120,7 +145,6 @@ function Cart({ route, navigation }) {
         return product.price * product.quantity;
     };
 
-
     const countSelectedProducts = () => {
         return cartProducts.length;
     };
@@ -181,6 +205,11 @@ function Cart({ route, navigation }) {
                     {sumSelectedProductsPrice()} VNĐ
                 </Text>
             </View>
+            <TouchableOpacity onPress={()=>navigation.navigate('EditProfile',{userId: auth.currentUser.uid ,userData})}>
+            <View style={{ margin: 5, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <Text style={styles.addressText}>{shippingAddress}</Text>
+            </View>
+        </TouchableOpacity>
 
             <TouchableOpacity style={{ backgroundColor: '#666666', margin: 7, padding: 15, borderRadius: 20 }} onPress={handleBuyNowAll}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -197,6 +226,11 @@ function Cart({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    addressText: {
+        marginRight:15,
+        fontSize: 14,
+        fontWeight: 'normal',
     },
     title: {
         fontSize: 18,

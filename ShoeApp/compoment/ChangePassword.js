@@ -40,7 +40,7 @@ const ChangePassword = ({ route, navigation }) => {
                         update(userRef, { pass: newPassword })
                             .then(() => {
                                 alert('Đã Đổi Mật Khẩu');
-                                navigation.navigate('TabNavi');
+                                navigation.navigate('TabNavi',{ isAuthenticated: true });
                             })
                             .catch((error) => {
                                 alert('Lỗi Cập nhật mật khẩu');

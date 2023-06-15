@@ -33,6 +33,10 @@ function ProductDetail({ route, navigation }) {
             navigation.navigate('Login');
         }
     };
+    const buyNow = () => {
+     alert('Chức năng đang phát triển');
+    };
+
 
     const increaseQuantity = () => {
         setQuantity(quantity + 1);
@@ -96,7 +100,7 @@ function ProductDetail({ route, navigation }) {
             <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
                 <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.addToCartButton} >
+            <TouchableOpacity style={styles.addToCartButton} onPress={buyNow}>
                 <Text style={styles.addToCartButtonText}>Mua Ngay</Text>
             </TouchableOpacity>
         </View>

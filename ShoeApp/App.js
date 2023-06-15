@@ -16,6 +16,7 @@ import ChatScreen from "./compoment/ChatScreen";
 import ChangePassword from "./compoment/ChangePassword";
 import Oder from './compoment/Oder';
 import AllShoes from './compoment/AllShoes';
+import EditProfile from "./compoment/EditProfile";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -35,6 +36,7 @@ export default function App() {
         <Stack.Screen name='ChatScreen' component={ChatScreen} options={{ title: 'Nhóm chat cộng đồng' }} />
         <Stack.Screen name='ChangePassword' component={ChangePassword} options={{ title: 'Đổi Mật Khẩu' }} />
         <Stack.Screen name='Oder' component={Oder} options={{ title: 'Đơn mua' }} />
+        <Stack.Screen name='EditProfile' component={EditProfile} options={{ title: 'Chỉnh sửa hồ sơ' }} />
       </Stack.Navigator>
 
     </NavigationContainer>

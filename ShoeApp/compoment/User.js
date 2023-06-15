@@ -98,7 +98,7 @@ function User({ navigation }) {
             <View style={styles.content}>
                 <TouchableOpacity
                     style={styles.section}
-                    onPress={() => navigation.navigate('EditProfile')}
+                    onPress={() => navigation.navigate('EditProfile',{ userId: auth.currentUser.uid ,userData})}
                 >
                     <Icon name="edit" size={20} color="orange" />
                     <Text style={styles.sectionText}>Chỉnh sửa thông tin</Text>
